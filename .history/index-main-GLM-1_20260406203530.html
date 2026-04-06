@@ -810,7 +810,7 @@ h1.headline .dim { color:var(--red); }
    SERVICES SECTION
 ══════════════════════════════ */
 #services-section {
-  min-height: 420vh;
+  min-height: 100vh;
   background: linear-gradient(
     to bottom,
     #000000 0%,
@@ -957,6 +957,50 @@ h1.headline .dim { color:var(--red); }
   border-color: rgba(255,255,255,0.6);
   background: rgba(255,255,255,0.2);
   box-shadow: 0 4px 40px rgba(0,0,0,0.2);
+}
+
+/* ── Auto-play Progress Bar ── */
+.services-progress-bar {
+  position: absolute;
+  bottom: clamp(28px, 4vh, 52px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 20;
+  direction: ltr;
+}
+
+.services-progress-segment {
+  position: relative;
+  width: clamp(48px, 7vw, 90px);
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.18);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.3s ease;
+}
+
+.services-progress-segment:hover {
+  transform: scaleY(1.8);
+  background: rgba(255,255,255,0.28);
+}
+
+.services-progress-segment.active {
+  background: rgba(255,255,255,0.25);
+  transform: scaleY(1.5);
+}
+
+.services-progress-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 99px;
+  background: #fff;
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
 }
 
 /* ── Content Panels ── */
@@ -1522,7 +1566,7 @@ h1.headline .dim { color:var(--red); }
   }
 
   /* ── Services ── */
-  #services-section { min-height: 300vh; }
+  #services-section { min-height: 100vh; }
   .services-content-wrap { top: 110px; }
   .services-nav { gap: 6px; }
   .services-nav-btn { padding: 8px 14px; font-size: 11px; }
@@ -2991,78 +3035,145 @@ h1.headline .dim { color:var(--red); }
 /* ── Toggle Button ── */
 .contact-toggle-btn {
   position: fixed;
-  top: 24px;
+  top: 50%;
+  transform: translateY(-50%);
   right: 24px;
   z-index: 100001;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 22px 0 18px;
-  height: 46px;
-  border: 1px solid rgba(255,255,255,0.08);
+  gap: 8px;
+  padding: 0 18px 0 14px;
+  height: 48px;
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 100px;
-  background: rgba(10,10,10,0.7);
+  background: linear-gradient(135deg, rgba(30,30,30,0.85), rgba(10,10,10,0.9));
   backdrop-filter: blur(20px) saturate(1.2);
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
   color: #fff;
   font-family: 'Tajawal', sans-serif;
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   opacity: 0;
-  transform: translateY(-16px);
+  transform: translateY(-50%) translateX(16px);
   filter: blur(8px);
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
   pointer-events: none;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset;
 }
 .contact-toggle-btn::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -1px;
   border-radius: 100px;
-  background: linear-gradient(135deg, rgba(230,57,70,0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(255,0,25,0.3), rgba(255,0,25,0.05) 50%, transparent 70%);
   opacity: 0;
   transition: opacity 0.5s ease;
+  z-index: -1;
+}
+.contact-toggle-btn::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 48px;
+  width: 8px;
+  height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--red);
+  animation: chatPulse 2s ease-in-out infinite;
+}
+@keyframes chatPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
 }
 .contact-toggle-btn:hover::before { opacity: 1; }
+.contact-toggle-btn:hover::after {
+  animation: chatPulse 0.8s ease-in-out infinite;
+}
 .contact-toggle-btn.is-ready {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(-50%) translateX(0);
   filter: blur(0);
   pointer-events: auto;
 }
 .contact-toggle-btn:hover {
-  border-color: rgba(230,57,70,0.4);
-  box-shadow: 0 0 40px rgba(230,57,70,0.15), inset 0 0 20px rgba(230,57,70,0.05);
-  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(255,0,25,0.5);
+  box-shadow: 0 8px 32px rgba(255,0,25,0.25), 0 0 0 1px rgba(255,0,25,0.1) inset;
+  transform: translateY(-50%) translateX(-4px) scale(1.02);
+  background: linear-gradient(135deg, rgba(40,20,20,0.9), rgba(20,10,10,0.95));
+}
+/* Chat Icon */
+.contact-toggle-btn .btn-chat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), #cc0014);
+  box-shadow: 0 2px 12px rgba(255,0,25,0.4);
+  position: relative;
+  flex-shrink: 0;
+}
+.contact-toggle-btn .btn-chat-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  position: relative;
+  z-index: 2;
+}
+.contact-toggle-btn .chat-pulse-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid var(--red);
+  opacity: 0;
+  animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulseRing {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 0; }
+  100% { transform: scale(0.9); opacity: 0; }
+}
+.contact-toggle-btn:hover .btn-chat-icon {
+  transform: scale(1.1);
+  box-shadow: 0 4px 20px rgba(255,0,25,0.6);
+}
+.contact-toggle-btn .btn-text {
+  color: rgba(255,255,255,0.95);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 .contact-toggle-btn .btn-arrow {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.08);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
   position: relative;
   z-index: 1;
 }
 .contact-toggle-btn:hover .btn-arrow {
-  background: var(--red);
-  box-shadow: 0 0 15px rgba(230,57,70,0.4);
-  transform: rotate(-45deg);
+  background: rgba(255,255,255,0.15);
+  transform: rotate(-45deg) scale(1.1);
 }
 .contact-toggle-btn .btn-arrow svg {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.2;
+  stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -3585,9 +3696,32 @@ h1.headline .dim { color:var(--red); }
   .contact-toggle-btn {
     top: 14px;
     right: 14px;
-    padding: 0 16px 0 12px;
-    height: 40px;
+    padding: 0 14px 0 10px;
+    height: 42px;
     font-size: 12px;
+    gap: 6px;
+  }
+  .contact-toggle-btn .btn-chat-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .contact-toggle-btn .btn-chat-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+  .contact-toggle-btn .btn-arrow {
+    width: 20px;
+    height: 20px;
+  }
+  .contact-toggle-btn .btn-arrow svg {
+    width: 10px;
+    height: 10px;
+  }
+  .contact-toggle-btn::after {
+    top: 6px;
+    left: 42px;
+    width: 7px;
+    height: 7px;
   }
   .contact-panel-topbar { padding: 24px 28px 0 28px; }
   .contact-panel-content { padding: 32px 28px 0 28px; }
@@ -4265,6 +4399,10 @@ html[dir="ltr"] #contactEmail {
   right: auto;
   left: 24px;
 }
+[dir="ltr"] .contact-toggle-btn::after {
+  left: auto;
+  right: 48px;
+}
 
 /* Contact side panel: swap from right to left */
 [dir="ltr"] .contact-side-panel {
@@ -4374,8 +4512,16 @@ html[dir="ltr"] #contactEmail {
 <canvas id="grain" aria-hidden="true"></canvas>
 
 <!-- ══ CONTACT SIDE PANEL ══ -->
-<button class="contact-toggle-btn" id="contactToggleBtn" aria-label="تواصل معنا" data-ar="كن مميز" data-en="Stand Out">
-  كن مميز
+<button class="contact-toggle-btn" id="contactToggleBtn" aria-label="تواصل معنا">
+  <span class="btn-chat-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      <line x1="9" y1="10" x2="15" y2="10"/>
+      <line x1="9" y1="14" x2="13" y2="14"/>
+    </svg>
+    <span class="chat-pulse-ring"></span>
+  </span>
+  <span class="btn-text" data-ar="اتصل بنا" data-en="Contact Us">اتصل بنا</span>
   <span class="btn-arrow">
     <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
   </span>
@@ -4519,7 +4665,7 @@ html[dir="ltr"] #contactEmail {
       <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Netflix" loading="lazy">
 
       <!-- Set 2 — exact copy for seamless loop -->
-      <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Google" loading="lazy">
+      <img src="https://imgs.search.brave.com/K3mIor_N1aNPAOaf6n1iLG3MpzpaXZDDI-wK2z1QhK8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9sb2dv/ZGl4LmNvbS9sb2dv/LzMyODA4OC5wbmc" alt="Google" loading="lazy">
       <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Amazon" loading="lazy">
       <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Netflix" loading="lazy">
       <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Netflix" loading="lazy">
@@ -4664,6 +4810,14 @@ html[dir="ltr"] #contactEmail {
       <button class="services-nav-btn" data-index="1" data-ar="الجودة" data-en="Quality">الجودة</button>
       <button class="services-nav-btn" data-index="2" data-ar="السعر" data-en="Price">السعر</button>
       <button class="services-nav-btn" data-index="3" data-ar="الدعم" data-en="Support">الدعم</button>
+    </div>
+
+    <!-- Auto-play Progress Bar -->
+    <div class="services-progress-bar" id="services-progress-bar">
+      <div class="services-progress-segment active" data-index="0"><div class="services-progress-fill"></div></div>
+      <div class="services-progress-segment" data-index="1"><div class="services-progress-fill"></div></div>
+      <div class="services-progress-segment" data-index="2"><div class="services-progress-fill"></div></div>
+      <div class="services-progress-segment" data-index="3"><div class="services-progress-fill"></div></div>
     </div>
 
     <!-- Content Panels -->
@@ -7380,6 +7534,47 @@ if (!isMobile) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// SERVICES SECTION SCROLL LOCK
+// ═══════════════════════════════════════════════════════════════
+(function() {
+  const servicesSection = document.getElementById('services-section');
+  if (!servicesSection) return;
+  
+  let isLocked = false;
+  let lastLockTime = 0;
+  const LOCK_DURATION = 1000; // مدة القفل: ثانية واحدة
+  const LOCK_COOLDOWN = 2500; // فترة التبريد بين الأقفال
+  
+  function lockScroll() {
+    const now = Date.now();
+    
+    // لا تقفل إذا كان مقفولاً بالفعل أو لم يمضِ وقت كافٍ
+    if (isLocked || (now - lastLockTime) < LOCK_COOLDOWN) return;
+    if (typeof lenis === 'undefined' || !lenis) return;
+    
+    isLocked = true;
+    lastLockTime = now;
+    lenis.stop();
+    
+    setTimeout(() => {
+      if (lenis && typeof lenis.start === 'function') {
+        lenis.start();
+      }
+      isLocked = false;
+    }, LOCK_DURATION);
+  }
+  
+  // قفل عند دخول القسم (من الأسفل للأعلى أو من الأعلى للأسفل)
+  ScrollTrigger.create({
+    trigger: '#services-section',
+    start: 'top top',
+    end: 'bottom bottom',
+    onEnter: lockScroll,      // سكرول للأسفل
+    onEnterBack: lockScroll   // سكرول للأعلى
+  });
+})();
+
+// ═══════════════════════════════════════════════════════════════
 // START INTRO ANIMATION - Initialize after lenis is defined
 // ═══════════════════════════════════════════════════════════════
 // Start intro when DOM is ready
@@ -7618,106 +7813,78 @@ window.addEventListener('load', function() {
   const section = document.getElementById('services-section');
   if (!section) return;
 
-  const bgPanels = section.querySelectorAll('.services-bg-panel');
+  const bgPanels      = section.querySelectorAll('.services-bg-panel');
   const contentPanels = section.querySelectorAll('.services-content-panel');
-  const navBtns = section.querySelectorAll('.services-nav-btn');
-  const decoNumber = section.querySelector('.panel-deco-number');
-  const totalPanels = 4;
-  let currentPanel = 0;
-  let isScrollLinked = true;
-  let scrollLinkTimeout;
+  const navBtns       = section.querySelectorAll('.services-nav-btn');
+  const decoNumber    = section.querySelector('.panel-deco-number');
+  const progressSegs  = section.querySelectorAll('.services-progress-segment');
+  const TOTAL         = 4;
+  const INTERVAL_MS   = 5000;
 
-  function setActivePanel(index) {
-    if (index < 0) index = 0;
-    if (index >= totalPanels) index = totalPanels - 1;
-    
+  let currentPanel  = 0;
+  let autoTimer     = null;
+  let fillTween     = null;
+
+  /* ── Core: activate a panel ── */
+  function setActivePanel(index, resetFill) {
+    index = ((index % TOTAL) + TOTAL) % TOTAL;
     currentPanel = index;
 
-    // Update background panels
-    bgPanels.forEach((panel, i) => {
-      panel.classList.toggle('active', i === index);
-    });
+    bgPanels.forEach((p, i)      => p.classList.toggle('active', i === index));
+    contentPanels.forEach((p, i) => p.classList.toggle('active', i === index));
+    navBtns.forEach((b, i)       => b.classList.toggle('active', i === index));
+    progressSegs.forEach((s, i)  => s.classList.toggle('active', i === index));
 
-    // Update content panels
-    contentPanels.forEach((panel, i) => {
-      panel.classList.toggle('active', i === index);
-    });
+    if (decoNumber) decoNumber.textContent = String(index + 1).padStart(2, '0');
 
-    // Update navigation buttons
-    navBtns.forEach((btn, i) => {
-      btn.classList.toggle('active', i === index);
-    });
-
-    // Update decorative number
-    if (decoNumber) {
-      decoNumber.textContent = String(index + 1).padStart(2, '0');
-    }
+    if (resetFill !== false) startFill(index);
   }
 
-  // ── Scroll-driven panel switching ──
-  ScrollTrigger.create({
-    trigger: '#services-section',
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 0.6,
-    onUpdate: (self) => {
-      if (!isScrollLinked) return;
+  /* ── Animate the fill bar for the active segment ── */
+  function startFill(index) {
+    // Reset all fills instantly
+    progressSegs.forEach(seg => {
+      const fill = seg.querySelector('.services-progress-fill');
+      gsap.set(fill, { scaleX: 0, transformOrigin: 'left center' });
+    });
 
-      // Map progress 0→0.88 to panels 0→3
-      // Anything above 0.88 keeps panel 3 — no dead zone
-      const ACTIVE_RANGE = 0.88;
-      const clamped = Math.min(self.progress, ACTIVE_RANGE);
-      const rawIndex = (clamped / ACTIVE_RANGE) * totalPanels;
-      const panelIndex = Math.min(Math.floor(rawIndex), totalPanels - 1);
-
-      if (panelIndex !== currentPanel) {
-        setActivePanel(panelIndex);
+    // Animate the active segment's fill over INTERVAL_MS
+    const activeFill = progressSegs[index].querySelector('.services-progress-fill');
+    if (fillTween) fillTween.kill();
+    fillTween = gsap.to(activeFill, {
+      scaleX: 1,
+      duration: INTERVAL_MS / 1000,
+      ease: 'none',
+      transformOrigin: 'left center',
+      onComplete: () => {
+        setActivePanel(currentPanel + 1);
       }
-    }
-  });
+    });
+  }
 
-  // ── Button click handling ──
-  navBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const targetIndex = parseInt(btn.getAttribute('data-index'));
-      
-      // Disable scroll linking temporarily
-      isScrollLinked = false;
-      clearTimeout(scrollLinkTimeout);
-      
-      // Set active panel immediately
-      setActivePanel(targetIndex);
-
-      // Scroll to the corresponding position within the section
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-      const viewportHeight = window.innerHeight;
-      const scrollableRange = sectionHeight - viewportHeight;
-      
-      // Calculate target scroll position for this panel
-      const panelScrollProgress = (targetIndex + 0.5) / totalPanels;
-      const targetScroll = sectionTop + scrollableRange * panelScrollProgress;
-      
-      // Use Lenis if available, otherwise native scroll
-      if (typeof lenis !== 'undefined') {
-        lenis.scrollTo(targetScroll, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-      } else {
-        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
-      }
-
-      // Re-enable scroll linking after transition
-      scrollLinkTimeout = setTimeout(() => {
-        isScrollLinked = true;
-      }, 1500);
+  /* ── Progress segment click ── */
+  progressSegs.forEach(seg => {
+    seg.addEventListener('click', () => {
+      const idx = parseInt(seg.getAttribute('data-index'));
+      setActivePanel(idx);
     });
   });
 
-  // ── Scale-in entrance from bottom while scrolling ──
+  /* ── Nav button click ── */
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-index'));
+      setActivePanel(idx);
+    });
+  });
+
+  /* ── Scale-in entrance animation ── */
   gsap.set('#services-inner', { scale: 0.6, y: 120, opacity: 0, borderRadius: '40px' });
   gsap.set('.services-nav-btn', { opacity: 0, y: -28, filter: 'blur(10px)', scale: 0.85 });
   gsap.set('.services-grain-overlay', { opacity: 0 });
+  gsap.set('#services-progress-bar', { opacity: 0, y: 16 });
 
-  const firstPanel = section.querySelector('.services-content-panel[data-panel="0"]');
+  const firstPanel   = section.querySelector('.services-content-panel[data-panel="0"]');
   const firstPanelEls = firstPanel
     ? firstPanel.querySelectorAll('.panel-counter, .panel-title, .panel-desc, .panel-tagline')
     : [];
@@ -7731,8 +7898,8 @@ window.addEventListener('load', function() {
     end: 'top top',
     scrub: 1,
     onUpdate: (self) => {
-      const p = self.progress;
-      const ep = 1 - Math.pow(1 - p, 3);          // ease-out cubic
+      const p  = self.progress;
+      const ep = 1 - Math.pow(1 - p, 3);
       gsap.set('#services-inner', {
         scale: 0.6 + 0.4 * ep,
         y: 120 * (1 - ep),
@@ -7744,21 +7911,20 @@ window.addEventListener('load', function() {
       gsap.set('#services-inner', { scale: 0.6, y: 120, opacity: 0, borderRadius: '40px' });
       gsap.set('.services-nav-btn', { opacity: 0, y: -28, filter: 'blur(10px)', scale: 0.85 });
       gsap.set('.services-grain-overlay', { opacity: 0 });
+      gsap.set('#services-progress-bar', { opacity: 0, y: 16 });
       if (firstPanel) {
         gsap.set(firstPanelEls, { clearProps: 'all' });
         firstPanel.classList.add('panel-entrance-pending');
       }
       navRevealed = false;
+      if (fillTween) fillTween.kill();
     },
     onEnter: () => {
       gsap.set('#services-inner', { scale: 1, y: 0, opacity: 1, borderRadius: '0px' });
-      gsap.to('.services-grain-overlay', {
-        opacity: 0.04, duration: 1.2, ease: 'power2.out'
-      });
+      gsap.to('.services-grain-overlay', { opacity: 0.04, duration: 1.2, ease: 'power2.out' });
     }
   });
 
-  // ── Buttons + first panel text — triggered when ~50% of scale-in is visible ──
   ScrollTrigger.create({
     trigger: '#services-section',
     start: 'top 50%',
@@ -7766,21 +7932,29 @@ window.addEventListener('load', function() {
       if (navRevealed) return;
       navRevealed = true;
 
-      // Buttons stagger
       gsap.to('.services-nav-btn', {
         opacity: 1, y: 0, filter: 'blur(0px)', scale: 1,
         duration: 0.75, ease: 'power3.out', stagger: 0.13
       });
 
-      // First panel text stagger (starts after buttons begin)
+      gsap.to('#services-progress-bar', {
+        opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', delay: 0.5
+      });
+
       if (firstPanel) {
         firstPanel.classList.remove('panel-entrance-pending');
         gsap.set(firstPanelEls, { opacity: 0, y: 30, filter: 'blur(10px)', scale: 0.9 });
         gsap.to(firstPanelEls, {
           opacity: 1, y: 0, filter: 'blur(0px)', scale: 1,
           duration: 0.75, ease: 'power3.out', stagger: 0.15, delay: 0.7,
-          onComplete: () => gsap.set(firstPanelEls, { clearProps: 'all' })
+          onComplete: () => {
+            gsap.set(firstPanelEls, { clearProps: 'all' });
+            // Start auto-play after entrance animation
+            setActivePanel(0);
+          }
         });
+      } else {
+        setActivePanel(0);
       }
     }
   });
@@ -7840,52 +8014,161 @@ window.addEventListener('load', function() {
   // Pre-calculate maxScale while scale is still 1
   calcMaxScale();
 
+  let autoZoomTween = null;
+  let currentP = 0;
+
+  function applyZoom(p) {
+    currentP = p;
+    const maxScale = calcMaxScale();
+
+    // Phase 1 (0 → 0.70): scale the whole screen up from 1 → maxScale
+    const zoomP = Math.min(p / 0.70, 1);
+    const ep    = 1 - Math.pow(1 - zoomP, 3);        // ease-out cubic
+    const scale = 1 + (maxScale - 1) * ep;
+
+    gsap.set(sticky, { scale, transformOrigin: originStr });
+
+    // Animate border-radius from 10px to 0 as zoom progresses
+    const borderRadiusProgress = Math.min(p / 0.60, 1);
+    const borderRadius = 10 * (1 - borderRadiusProgress);
+    centerCell.style.borderRadius = `${borderRadius}px`;
+
+    // Show/hide content overlay and ticker together
+    if (p >= 0.50) {
+      contentEl.classList.add('visible');
+      if (!tickerShown) {
+        tickerShown = true;
+        tickerEl.classList.add('visible');
+        contentEl.classList.add('ticker-visible');
+      }
+    } else {
+      contentEl.classList.remove('visible');
+    }
+
+    // Hide ticker if scrolling back
+    if (p < 0.50) {
+      tickerShown = false;
+      tickerEl.classList.remove('visible');
+      contentEl.classList.remove('ticker-visible');
+    }
+  }
+
+  // ── shared zoom-in / zoom-out helpers ──────────────────────────────────
+
+  function insideSection() {
+    const sy = window.scrollY;
+    return sy >= section.offsetTop && sy <= section.offsetTop + section.offsetHeight - window.innerHeight + 10;
+  }
+
+  function onWheelForZoomOut(e) {
+    if (e.deltaY < 0 && currentP >= 0.99 && insideSection()) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      startZoomOut();
+    }
+  }
+  function onWheelForZoomIn(e)  { if (e.deltaY > 0 && Math.abs(sticky.getBoundingClientRect().top) < 5) startZoomIn(); }
+
+  let touchStartY = 0;
+
+  function onTouchForZoomOut(e)  { touchStartY = e.touches[0].clientY; window.addEventListener('touchmove', onTouchMoveForZoomOut, { passive: true }); }
+  function onTouchMoveForZoomOut(e) {
+    if (e.touches[0].clientY > touchStartY && currentP >= 0.99 && insideSection()) { window.removeEventListener('touchmove', onTouchMoveForZoomOut); startZoomOut(); }
+  }
+  function onTouchForZoomIn(e)   { touchStartY = e.touches[0].clientY; window.addEventListener('touchmove', onTouchMoveForZoomIn,  { passive: true }); }
+  function onTouchMoveForZoomIn(e) {
+    if (e.touches[0].clientY < touchStartY && Math.abs(sticky.getBoundingClientRect().top) < 5) { window.removeEventListener('touchmove', onTouchMoveForZoomIn); startZoomIn(); }
+  }
+
+  function enableZoomOutListeners() {
+    window.addEventListener('wheel',      onWheelForZoomOut, { passive: false, capture: true });
+    window.addEventListener('touchstart', onTouchForZoomOut, { passive: true });
+  }
+  function disableZoomOutListeners() {
+    window.removeEventListener('wheel',      onWheelForZoomOut, { capture: true });
+    window.removeEventListener('touchstart', onTouchForZoomOut);
+    window.removeEventListener('touchmove',  onTouchMoveForZoomOut);
+  }
+  function enableZoomInListeners() {
+    window.addEventListener('wheel',      onWheelForZoomIn,  { passive: true });
+    window.addEventListener('touchstart', onTouchForZoomIn,  { passive: true });
+  }
+  function disableZoomInListeners() {
+    window.removeEventListener('wheel',      onWheelForZoomIn);
+    window.removeEventListener('touchstart', onTouchForZoomIn);
+    window.removeEventListener('touchmove',  onTouchMoveForZoomIn);
+  }
+  function disableAllListeners() { disableZoomOutListeners(); disableZoomInListeners(); }
+
+  // ── zoom-in ─────────────────────────────────────────────────────────────
+  function startZoomIn() {
+    if (autoZoomTween) return;
+    disableZoomInListeners();
+    // Lock scroll during zoom-in so user can't scroll away while animating
+    window.addEventListener('wheel',     preventScroll, { passive: false, capture: true });
+    window.addEventListener('touchmove', preventScroll, { passive: false, capture: true });
+    const proxy = { p: 0 };
+    autoZoomTween = gsap.to(proxy, {
+      p: 1,
+      duration: 1.4,
+      ease: 'power2.inOut',
+      onUpdate()  { applyZoom(proxy.p); },
+      onComplete() {
+        autoZoomTween = null;
+        window.removeEventListener('wheel',     preventScroll, { capture: true });
+        window.removeEventListener('touchmove', preventScroll, { capture: true });
+        const sectionEnd = section.offsetTop + section.offsetHeight - window.innerHeight;
+        if (typeof lenis !== 'undefined' && lenis) {
+          lenis.scrollTo(sectionEnd, { immediate: true });
+        } else {
+          window.scrollTo(0, sectionEnd);
+        }
+        enableZoomOutListeners();
+      }
+    });
+  }
+
+  // ── zoom-out ─────────────────────────────────────────────────────────────
+  function preventScroll(e) { e.preventDefault(); e.stopImmediatePropagation(); }
+
+  function startZoomOut() {
+    disableZoomOutListeners();
+    if (autoZoomTween) { autoZoomTween.kill(); }
+    // capture:true fires before Lenis — fully blocks user scroll during zoom-out
+    window.addEventListener('wheel',     preventScroll, { passive: false, capture: true });
+    window.addEventListener('touchmove', preventScroll, { passive: false, capture: true });
+    const proxy = { p: currentP };
+    autoZoomTween = gsap.to(proxy, {
+      p: 0,
+      duration: 1.4,
+      ease: 'power2.inOut',
+      onUpdate()  { applyZoom(proxy.p); },
+      onComplete() {
+        autoZoomTween = null;
+        window.removeEventListener('wheel',     preventScroll, { capture: true });
+        window.removeEventListener('touchmove', preventScroll, { capture: true });
+        if (typeof lenis !== 'undefined' && lenis) {
+          lenis.scrollTo(section.offsetTop, { immediate: true });
+        } else {
+          window.scrollTo(0, section.offsetTop);
+        }
+        enableZoomInListeners();
+      }
+    });
+  }
+
   ScrollTrigger.create({
     trigger: '#zoom-gallery-section',
-    // *** Zoom starts as soon as the section top hits the viewport top ***
     start: 'top top',
-    end: 'bottom bottom',
-    scrub: 1.2,
-    onUpdate(self) {
-      const p = self.progress;
-
-      // Origin is cached at init and on resize — no need to recalc every frame
-      const maxScale = calcMaxScale();
-
-      // Phase 1 (0 → 0.70): scale the whole screen up from 1 → maxScale
-      const zoomP = Math.min(p / 0.70, 1);
-      const ep    = 1 - Math.pow(1 - zoomP, 3);        // ease-out cubic
-      const scale = 1 + (maxScale - 1) * ep;
-
-      gsap.set(sticky, { scale, transformOrigin: originStr });
-
-      // Animate border-radius from 10px to 0 as zoom progresses
-      const borderRadiusProgress = Math.min(p / 0.60, 1);
-      const borderRadius = 10 * (1 - borderRadiusProgress);
-      centerCell.style.borderRadius = `${borderRadius}px`;
-
-      // Show/hide content overlay and ticker together
-      if (p >= 0.50) {
-        contentEl.classList.add('visible');
-        if (!tickerShown) {
-          tickerShown = true;
-          tickerEl.classList.add('visible');
-          contentEl.classList.add('ticker-visible');
-        }
-      } else {
-        contentEl.classList.remove('visible');
-      }
-
-      // Hide ticker if scrolling back
-      if (p < 0.50) {
-        tickerShown = false;
-        tickerEl.classList.remove('visible');
-        contentEl.classList.remove('ticker-visible');
-      }
-
-      // Keep other cells visible (no fade during zoom)
+    onEnter() {
+      disableAllListeners();
+      startZoomIn();
     },
     onLeaveBack() {
+      disableAllListeners();
+      window.removeEventListener('wheel',     preventScroll, { capture: true });
+      window.removeEventListener('touchmove', preventScroll, { capture: true });
+      if (autoZoomTween) { autoZoomTween.kill(); autoZoomTween = null; }
+      currentP = 0;
       gsap.set(sticky, { scale: 1 });
       centerCell.style.borderRadius = '10px';
       contentEl.classList.remove('visible');
