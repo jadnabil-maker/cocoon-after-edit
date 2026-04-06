@@ -4328,39 +4328,6 @@ html[dir="ltr"] #contactEmail {
 }
 
 
-/* ══════════════════════════════════════════════════════════════
-   MOBILE PERFORMANCE OPTIMIZATIONS
-   تقليل الـ blur والـ animation على الموبايل لتحسين الأداء
-   لا يتغير أي شيء في الشكل - فقط قيم أخف للـ GPU
-   ══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  /* تقليل الـ fog blur - نفس التأثير البصري بثقل أقل */
-  #fog-bottom  { filter: blur(12px); }
-  #fog-top     { filter: blur(14px); }
-  #fog-left    { filter: blur(12px); }
-  #fog-right   { filter: blur(12px); }
-  #fog-center  { filter: blur(16px); }
-  #fog-corner-bl, #fog-corner-br { filter: blur(10px); }
-  #fog-corner-tl, #fog-corner-tr { filter: blur(10px); }
-  #fog-breath  { filter: blur(18px); animation: none; }
-
-  /* تقليل backdrop-filter - أثقل عنصر GPU على الموبايل */
-  .contact-toggle-btn {
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-  }
-
-  /* تعطيل fogBreathing animation على الموبايل */
-  @keyframes fogBreathing {
-    0%, 100% { transform: scale(1); }
-  }
-
-  /* تقليل will-change على الموبايل - يسبب memory pressure */
-  * { will-change: auto !important; }
-  .gsap-animated, [data-gsap], [class*="reveal"], [class*="animate"] {
-    will-change: transform, opacity;
-  }
-}
 </style>
 </head>
 <body>
@@ -4505,20 +4472,20 @@ html[dir="ltr"] #contactEmail {
   <div class="clients-marquee-wrap" id="clients-marquee">
     <div class="clients-marquee-track">
       <!-- Set 1 -->
-      <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Google" loading="lazy">
-      <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Amazon" loading="lazy">
-      <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Netflix" loading="lazy">
-      <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Netflix" loading="lazy">
-      <img src="https://imgs.search.brave.com/K4hwpYzeZ8mwFRGJ-h3nOvfYFhVfbkXN3uxh60SJe4U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzcvQ2Fk/aWxsYWMtSWNvbi1U/cmFuc3BhcmVudC1J/bWFnZXMucG5n" alt="Netflix" loading="lazy">
-      <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Netflix" loading="lazy">
+      <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Google">
+      <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Amazon">
+      <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Netflix">
+      <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Netflix">
+      <img src="https://imgs.search.brave.com/K4hwpYzeZ8mwFRGJ-h3nOvfYFhVfbkXN3uxh60SJe4U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzcvQ2Fk/aWxsYWMtSWNvbi1U/cmFuc3BhcmVudC1J/bWFnZXMucG5n" alt="Netflix">
+      <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Netflix">
 
       <!-- Set 2 — exact copy for seamless loop -->
-      <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Google" loading="lazy">
-      <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Amazon" loading="lazy">
-      <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Netflix" loading="lazy">
-      <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Netflix" loading="lazy">
-      <img src="https://imgs.search.brave.com/K4hwpYzeZ8mwFRGJ-h3nOvfYFhVfbkXN3uxh60SJe4U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzcvQ2Fk/aWxsYWMtSWNvbi1U/cmFuc3BhcmVudC1J/bWFnZXMucG5n" alt="Netflix" loading="lazy">
-      <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Netflix" loading="lazy">
+      <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Google">
+      <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Amazon">
+      <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Netflix">
+      <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Netflix">
+      <img src="https://imgs.search.brave.com/K4hwpYzeZ8mwFRGJ-h3nOvfYFhVfbkXN3uxh60SJe4U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzcvQ2Fk/aWxsYWMtSWNvbi1U/cmFuc3BhcmVudC1J/bWFnZXMucG5n" alt="Netflix">
+      <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Netflix">
 
     </div>
   </div>
@@ -4763,17 +4730,17 @@ html[dir="ltr"] #contactEmail {
       <!-- Row 1 -->
       <div class="zoom-cell zgc-r1l">
         <div class="zc-bg zc-bg--r1l"></div>
-        <img class="zc-image" src="https://iili.io/BzXr6Yb.jpg" alt="" loading="lazy">
+        <img class="zc-image" src="https://iili.io/BzXr6Yb.jpg" alt="">
       </div>
       <div class="zoom-cell zgc-r1r">
         <div class="zc-bg zc-bg--r1r"></div>
-        <img class="zc-image" src="https://iili.io/BzXrW4n.jpg" alt="" loading="lazy">
+        <img class="zc-image" src="https://iili.io/BzXrW4n.jpg" alt="">
       </div>
 
       <!-- Row 2 -->
       <div class="zoom-cell zgc-r2l">
         <div class="zc-bg zc-bg--r2l"></div>
-        <img class="zc-image" src="https://iili.io/BzXrQjV.md.jpg" alt="" loading="lazy">
+        <img class="zc-image" src="https://iili.io/BzXrQjV.md.jpg" alt="">
       </div>
       <div class="zoom-cell zgc-r2c" id="zoom-center">
         <div class="zc-bg zc-bg--r2c"></div>
@@ -4793,36 +4760,36 @@ html[dir="ltr"] #contactEmail {
           <div class="zoom-ticker-wrap">
             <div class="zoom-ticker-track">
               <!-- Set 1 -->
-              <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Chery" loading="lazy">
-              <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Burger King" loading="lazy">
-              <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Karl Lagerfeld" loading="lazy">
-              <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Chevrolet" loading="lazy">
-              <img src="https://imgs.search.brave.com/K4hwpYzeZ8mwFRGJ-h3nOvfYFhVfbkXN3uxh60SJe4U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzcvQ2Fk/aWxsYWMtSWNvbi1U/cmFuc3BhcmVudC1J/bWFnZXMucG5n" alt="Cadillac" loading="lazy">
-              <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Pizza Hut" loading="lazy">
+              <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Chery">
+              <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Burger King">
+              <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Karl Lagerfeld">
+              <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Chevrolet">
+              <img src="https://imgs.search.brave.com/K4hwpYzeZ8mwFRGJ-h3nOvfYFhVfbkXN3uxh60SJe4U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzcvQ2Fk/aWxsYWMtSWNvbi1U/cmFuc3BhcmVudC1J/bWFnZXMucG5n" alt="Cadillac">
+              <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Pizza Hut">
               <!-- Set 2 — exact copy for seamless loop -->
-              <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Chery" loading="lazy">
-              <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Burger King" loading="lazy">
-              <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Karl Lagerfeld" loading="lazy">
-              <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Chevrolet" loading="lazy">
-              <img src="https://imgs.search.brave.com/K4hwpYzeZ8mwFRGJ-h3nOvfYFhVfbkXN3uxh60SJe4U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzcvQ2Fk/aWxsYWMtSWNvbi1U/cmFuc3BhcmVudC1J/bWFnZXMucG5n" alt="Cadillac" loading="lazy">
-              <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Pizza Hut" loading="lazy">
+              <img src="https://imgs.search.brave.com/2I9I1-_tvRRexmT9SvAkS8ixQuGLTxVbrSd5j2mW3wM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/Ni9jaGVyeV9hdXRv/bW9iaWxlLWxvZ29f/YnJhbmRsb2dvcy5u/ZXRfdWUydnUtNTEy/eDE5Ny5wbmc" alt="Chery">
+              <img src="https://imgs.search.brave.com/3ARZeonslSFLrIlTPoacWzML77H7FzkF-zES8Ms21Ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZWRpZ2l0YWxhZ2Vu/Y3kuY29tLmF1L3dw/LWNvbnRlbnQvdXBs/b2Fkcy9uZXctQnVy/Z2VyLUtpbmctbG9n/by1wbmctbGFyZ2Ut/c2l6ZS5wbmc" alt="Burger King">
+              <img src="https://imgs.search.brave.com/RaeoFr7g8DLNcjHrIwt87SOGSA_LwsuXIQgogKQJ4NI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzcvMi9rYXJsLWxh/Z2VyZmVsZC1sb2dv/LXBuZ19zZWVrbG9n/by03NzM0MC5wbmc" alt="Karl Lagerfeld">
+              <img src="https://imgs.search.brave.com/drjS81ayOHREVtkp7K3e3hscNW6tW1oIJz6hIKkJ8Mw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5nbG9nby5jb20v/aW1hZ2VzL2FsbF9p/bWcvMTczMzcyNzM1/NF9jaGV2cm9sZXQt/bG9nby1wbmctd2l0/aC1uYW1lLnBuZw" alt="Chevrolet">
+              <img src="https://imgs.search.brave.com/K4hwpYzeZ8mwFRGJ-h3nOvfYFhVfbkXN3uxh60SJe4U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzcvQ2Fk/aWxsYWMtSWNvbi1U/cmFuc3BhcmVudC1J/bWFnZXMucG5n" alt="Cadillac">
+              <img src="https://imgs.search.brave.com/agSTYwg5XXbXYHSK6PkVWwU0v2VbhDcF-oV87eY80ws/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/aGF0Y2h3aXNlLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMy9QaXp6YS1I/dXQtTG9nby0xOTc0/LTE5OTktNzAweDM5/NC0xLnBuZw" alt="Pizza Hut">
             </div>
           </div>
         </div>
       </div>
       <div class="zoom-cell zgc-r2r">
         <div class="zc-bg zc-bg--r2r"></div>
-        <img class="zc-image" src="https://iili.io/BzXrakv.jpg" alt="" loading="lazy">
+        <img class="zc-image" src="https://iili.io/BzXrakv.jpg" alt="">
       </div>
 
       <!-- Row 3 -->
       <div class="zoom-cell zgc-r3l">
         <div class="zc-bg zc-bg--r3l"></div>
-        <img class="zc-image" src="https://iili.io/BzXrDCP.md.jpg" alt="" loading="lazy">
+        <img class="zc-image" src="https://iili.io/BzXrDCP.md.jpg" alt="">
       </div>
       <div class="zoom-cell zgc-r3r">
         <div class="zc-bg zc-bg--r3r"></div>
-        <img class="zc-image" src="https://iili.io/BzX4H8J.jpg" alt="" loading="lazy">
+        <img class="zc-image" src="https://iili.io/BzX4H8J.jpg" alt="">
       </div>
 
     </div>
@@ -5436,7 +5403,7 @@ html[dir="ltr"] #contactEmail {
     <!-- Card 1: المبتدئ -->
     <div class="pricing-card">
       <div class="pricing-card-img">
-        <img src="https://framerusercontent.com/images/tW8D1ZzFjl9fGrzHIhCrWI7IrXs.png?scale-down-to=1024&width=2280&height=877" alt="المبتدئ" loading="lazy">
+        <img src="https://framerusercontent.com/images/tW8D1ZzFjl9fGrzHIhCrWI7IrXs.png?scale-down-to=1024&width=2280&height=877" alt="المبتدئ">
       </div>
       <div class="pricing-card-body">
         <div class="pricing-card-name" data-ar="المبتدئ" data-en="Starter">المبتدئ</div>
@@ -5464,7 +5431,7 @@ html[dir="ltr"] #contactEmail {
     <div class="pricing-card">
       <div class="pricing-popular" data-ar="الأكثر طلبًا" data-en="Most Popular">الأكثر طلبًا</div>
       <div class="pricing-card-img">
-        <img src="https://framerusercontent.com/images/WJVkqI4rmzJjgbI4IPyOdgtX0E.png?scale-down-to=1024&width=2280&height=856" alt="احترافي" loading="lazy">
+        <img src="https://framerusercontent.com/images/WJVkqI4rmzJjgbI4IPyOdgtX0E.png?scale-down-to=1024&width=2280&height=856" alt="احترافي">
       </div>
       <div class="pricing-card-body">
         <div class="pricing-card-name" data-ar="احترافي" data-en="Professional">احترافي</div>
@@ -7019,16 +6986,9 @@ function revealHero() {
 /* ── GRAIN ── */
 (function(){
   const c = document.getElementById('grain');
-  if (!c) return;
-  /* تعطيل Grain على الموبايل — يوفر 30-50% CPU */
-  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768) {
-    c.style.display = 'none';
-    return;
-  }
   const x = c.getContext('2d');
   let last = 0;
   const FPS = 20;
-  let running = true;
 
   function resize(){ c.width=innerWidth; c.height=innerHeight; }
   function draw(){
@@ -7041,16 +7001,10 @@ function revealHero() {
     x.putImageData(id,0,0);
   }
   function loop(t){
-    if (!running) return;
     requestAnimationFrame(loop);
     if(t-last < 1000/FPS) return;
     last=t; draw();
   }
-  /* توقف لما الـ tab مش مرئية — يوفر CPU وبطارية */
-  document.addEventListener('visibilitychange', function(){
-    running = !document.hidden;
-    if (running) requestAnimationFrame(loop);
-  });
   resize();
   addEventListener('resize', resize);
   requestAnimationFrame(loop);
@@ -7356,21 +7310,17 @@ ScrollTrigger.create({
 
 
 let lenis;
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
-if (!isMobile) {
-  try {
-    lenis = new Lenis({
-      duration:0.9,
-      easing:t=>Math.min(1,1.001-Math.pow(2,-10*t))
-    });
-    lenis.stop();
-    lenis.on('scroll', ScrollTrigger.update);
-    function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
-  } catch(e) {
-    console.warn('Lenis failed to initialize:', e);
-    lenis = undefined;
-  }
+try {
+  lenis = new Lenis({
+    duration:0.9,
+    easing:t=>Math.min(1,1.001-Math.pow(2,-10*t))
+  });
+  lenis.stop();
+  function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+} catch(e) {
+  console.warn('Lenis failed to initialize:', e);
+  lenis = undefined;
 }
 
 // ═══════════════════════════════════════════════════════════════
