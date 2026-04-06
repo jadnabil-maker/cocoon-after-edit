@@ -3247,11 +3247,9 @@ h1.headline .dim { color:var(--red); }
   }
 }
 
-/* ── Arabic Fix: letter-spacing يكسر توصيل الحروف في Safari (iOS + macOS) ── */
-[dir="rtl"] #intro-logo-name,
-[dir="rtl"] .nav-brand,
-[dir="rtl"] .panel-topbar-label {
-  letter-spacing: 0;
+/* ── Arabic Fix: Global — letter-spacing يكسر توصيل الحروف في Safari ── */
+[dir="rtl"] * {
+  letter-spacing: 0 !important;
   font-feature-settings: "liga" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
 }
