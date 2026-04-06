@@ -4504,11 +4504,10 @@ html[dir="ltr"] #contactEmail {
 
 
 /* ══════════════════════════════════════════════════════════════
-   MOBILE PERFORMANCE OPTIMIZATIONS
-   تقليل الـ blur والـ animation على الموبايل لتحسين الأداء
-   لا يتغير أي شيء في الشكل - فقط قيم أخف للـ GPU
+   MOBILE + TABLET PERFORMANCE OPTIMIZATIONS
+   يشمل: الموبايل + iPad (portrait + landscape) حتى 1024px
    ══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   /* ─── 1. fog: حذف blur كلياً — كل blur = compositing layer على iOS GPU ─── */
   .statement-fog { filter: none !important; }
 
@@ -4544,6 +4543,37 @@ html[dir="ltr"] #contactEmail {
   * { will-change: auto !important; }
   .gsap-animated, [data-gsap], [class*="reveal"], [class*="animate"] {
     will-change: transform, opacity;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MacBook SAFARI PERFORMANCE FIX (desktop Safari فقط)
+   @supports (font: -apple-system-body) = Safari خصيصاً
+   فيكس أخف — يحافظ على التصميم الكبير لكن يقلل GPU
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1025px) {
+  @supports (font: -apple-system-body) {
+    /* تخفيف blur (مش حذف كلي) — مهم بصرياً على الشاشات الكبيرة */
+    #fog-bottom  { filter: blur(20px); }
+    #fog-top     { filter: blur(20px); }
+    #fog-left    { filter: blur(18px); }
+    #fog-right   { filter: blur(18px); }
+    #fog-center  { filter: blur(24px); }
+    #fog-corner-bl, #fog-corner-br { filter: blur(14px); }
+    #fog-corner-tl, #fog-corner-tr { filter: blur(14px); }
+    /* إيقاف التنفس المتحرك — continuous animation مكلف على Safari */
+    #fog-breath  { animation: none; filter: blur(22px); }
+
+    /* إيقاف grain — mix-blend-mode:overlay مكلف على Safari */
+    #statement-grain { display: none; }
+
+    /* حذف SVG blur filter — compositing context منفصل */
+    #red-path-line, #path-dot { filter: none; }
+
+    /* تبسيط word transitions على Safari desktop */
+    .word { transition: opacity 0.45s ease, transform 0.45s ease; }
+    .word.revealing, .word.revealed,
+    .word.highlight.revealing, .word.highlight.revealed { filter: none; }
   }
 }
 </style>
@@ -7499,7 +7529,7 @@ gsap.to('#statement-deco-num', {
 ══════════════════════════════ */
 (function(){
   /* على الموبايل: فقط 4 طبقات fog مبسطة بدون transform — opacity فقط */
-  if (window.matchMedia('(max-width: 768px)').matches) {
+  if (window.matchMedia('(max-width: 1024px)').matches) {
     var mobileFogs = ['#fog-center', '#fog-bottom', '#fog-left', '#fog-right'];
     ScrollTrigger.create({
       trigger: '#statement-section',
@@ -7630,7 +7660,7 @@ function revealWords() {
   wordTimers.forEach(clearTimeout);
   wordTimers = [];
 
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const isMobile = window.matchMedia('(max-width: 1024px)').matches;
 
   // نعيد الـ stagger delays قبل البدء (ممكن تكون صُفِّرت في resetWords)
   stWords.forEach((w, i) => {
