@@ -4509,28 +4509,38 @@ html[dir="ltr"] #contactEmail {
    لا يتغير أي شيء في الشكل - فقط قيم أخف للـ GPU
    ══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  /* تقليل الـ fog blur - نفس التأثير البصري بثقل أقل */
-  #fog-bottom  { filter: blur(12px); }
-  #fog-top     { filter: blur(14px); }
-  #fog-left    { filter: blur(12px); }
-  #fog-right   { filter: blur(12px); }
-  #fog-center  { filter: blur(16px); }
-  #fog-corner-bl, #fog-corner-br { filter: blur(10px); }
-  #fog-corner-tl, #fog-corner-tr { filter: blur(10px); }
-  #fog-breath  { filter: blur(18px); animation: none; }
+  /* ─── 1. fog: حذف blur كلياً — كل blur = compositing layer على iOS GPU ─── */
+  .statement-fog { filter: none !important; }
 
-  /* تقليل backdrop-filter - أثقل عنصر GPU على الموبايل */
+  /* ─── 2. إخفاء 6 fog layers غير ضرورية على الموبايل ─── */
+  #fog-corner-tl, #fog-corner-tr,
+  #fog-corner-bl, #fog-corner-br,
+  #fog-top, #fog-breath { display: none !important; }
+
+  /* ─── 3. إيقاف grain — mix-blend-mode:overlay أثقل عملية GPU على iOS ─── */
+  #statement-grain { display: none !important; }
+
+  /* ─── 4. حذف SVG blur filter من المسار الأحمر ─── */
+  #red-path-line, #path-dot { filter: none !important; }
+
+  /* ─── 5. تبسيط word transitions — إزالة filter:blur من الـ animation ─── */
+  .word { transition: opacity 0.45s ease, transform 0.45s ease !important; }
+  .word.revealing, .word.revealed,
+  .word.highlight.revealing, .word.highlight.revealed { filter: none !important; }
+
+  /* ─── 6. عزل الـ section — يمنع composite bleed على الأقسام المجاورة ─── */
+  #statement-inner { contain: strict; isolation: isolate; }
+
+  /* ─── 7. backdrop-filter مخفف ─── */
   .contact-toggle-btn {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
   }
 
-  /* تعطيل fogBreathing animation على الموبايل */
-  @keyframes fogBreathing {
-    0%, 100% { transform: scale(1); }
-  }
+  /* ─── 8. إيقاف fogBreathing ─── */
+  @keyframes fogBreathing { 0%, 100% { transform: scale(1); } }
 
-  /* تقليل will-change على الموبايل - يسبب memory pressure */
+  /* ─── 9. will-change — memory pressure على iOS ─── */
   * { will-change: auto !important; }
   .gsap-animated, [data-gsap], [class*="reveal"], [class*="animate"] {
     will-change: transform, opacity;
@@ -7488,6 +7498,22 @@ gsap.to('#statement-deco-num', {
    FOG / GLOW SCROLL ANIMATIONS
 ══════════════════════════════ */
 (function(){
+  /* على الموبايل: فقط 4 طبقات fog مبسطة بدون transform — opacity فقط */
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    var mobileFogs = ['#fog-center', '#fog-bottom', '#fog-left', '#fog-right'];
+    ScrollTrigger.create({
+      trigger: '#statement-section',
+      start: 'top 70%',
+      onEnter: function() {
+        gsap.to(mobileFogs, { opacity: 1, duration: 0.8, ease: 'power2.out', stagger: 0.1 });
+      },
+      onLeaveBack: function() {
+        gsap.to(mobileFogs, { opacity: 0, duration: 0.3 });
+      }
+    });
+    return;
+  }
+
   const fogTL = gsap.timeline({
     scrollTrigger: {
       trigger: '#statement-section',
@@ -7604,18 +7630,22 @@ function revealWords() {
   wordTimers.forEach(clearTimeout);
   wordTimers = [];
 
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
   // نعيد الـ stagger delays قبل البدء (ممكن تكون صُفِّرت في resetWords)
   stWords.forEach((w, i) => {
     w.style.transitionDelay = `${i * (WORD_STAGGER_MS / 1000)}s`;
   });
 
-  // مرحلة ١: revealing (blur جزئي)
-  stWords.forEach(w => w.classList.add('revealing'));
+  if (!isMobile) {
+    // مرحلة ١: revealing (blur جزئي) — desktop فقط، مكلفة على iOS
+    stWords.forEach(w => w.classList.add('revealing'));
+  }
 
-  // مرحلة ٢: revealed بعد 300ms — الـ CSS transition-delay يتكفل بالـ stagger
+  // مرحلة ٢: revealed — على الموبايل مباشرة، على desktop بعد 300ms
   wordTimers.push(setTimeout(() => {
     stWords.forEach(w => w.classList.add('revealed'));
-  }, 300));
+  }, isMobile ? 0 : 300));
 
   // مرحلة ٣: glow بعد اكتمال آخر كلمة
   const glowDelay = 300 + (total - 1) * WORD_STAGGER_MS + 650;
