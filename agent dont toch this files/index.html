@@ -3096,7 +3096,6 @@ h1.headline .dim { color:var(--red); }
   height: 100dvh;
   background: #060606;
   clip-path: inset(0 0 0 100%);
-  visibility: hidden;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
@@ -3104,8 +3103,7 @@ h1.headline .dim { color:var(--red); }
   flex-direction: column;
   direction: inherit;
   will-change: clip-path;
-  transition: clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              visibility 0s 0.7s;
+  transition: clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .contact-side-panel::-webkit-scrollbar { display: none; }
 @media (max-width: 768px) {
@@ -3113,9 +3111,6 @@ h1.headline .dim { color:var(--red); }
 }
 .contact-side-panel.is-active {
   clip-path: inset(0 0 0 0);
-  visibility: visible;
-  transition: clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              visibility 0s 0s;
 }
 
 /* ── Ambient Glow (inside panel) ── */
