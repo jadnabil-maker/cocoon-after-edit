@@ -25,7 +25,7 @@
   --black: #000000;
 }
 
-html { scrollbar-width:none; }
+html { scrollbar-width:none; touch-action: pan-y; }
 [dir="ltr"] .lang-toggle { left: auto; right: 24px; }
 html::-webkit-scrollbar { display:none; }
 
@@ -33,6 +33,7 @@ body {  background: var(--black);
   color: var(--white);
   font-family: 'Tajawal', sans-serif;
   overflow-x: hidden;
+  touch-action: pan-y;
   scrollbar-width: none;
 }
 body::-webkit-scrollbar { display:none; }
