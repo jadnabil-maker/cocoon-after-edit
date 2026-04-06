@@ -7806,27 +7806,21 @@ window.addEventListener('load', function() {
   // The zoom works by scaling the ENTIRE sticky container (the screen/viewport)
   // anchored to the center cell's position, giving a "camera zoom" effect.
 
-  function getCenterOrigin() {
-    const gridRect   = sticky.getBoundingClientRect();
-    const cellRect   = centerCell.getBoundingClientRect();
-    const ox = ((cellRect.left + cellRect.width  / 2) - gridRect.left) / gridRect.width  * 100;
-    const oy = ((cellRect.top  + cellRect.height / 2) - gridRect.top)  / gridRect.height * 100;
-    return { ox, oy };
-  }
-
-  let originX = 50, originY = 50;
+  let originStr = '50% 50%';
 
   function refreshOrigin() {
-    const o = getCenterOrigin();
-    originX  = o.ox;
-    originY  = o.oy;
-    sticky.style.transformOrigin = `${originX}% ${originY}%`;
+    const gridRect = sticky.getBoundingClientRect();
+    const cellRect = centerCell.getBoundingClientRect();
+    const px = Math.round((cellRect.left + cellRect.width  / 2) - gridRect.left);
+    const py = Math.round((cellRect.top  + cellRect.height / 2) - gridRect.top);
+    originStr = `${px}px ${py}px`;
+    sticky.style.transformOrigin = originStr;
   }
 
   requestAnimationFrame(() => { requestAnimationFrame(refreshOrigin); });
   window.addEventListener('resize', refreshOrigin);
 
-  gsap.set(sticky, { scale: 1, transformOrigin: `${originX}% ${originY}%` });
+  gsap.set(sticky, { scale: 1, transformOrigin: '50% 50%' });
 
   // Cache maxScale once (at scale=1) to avoid getBoundingClientRect feedback loop
   let maxScaleCache = null;
@@ -7863,7 +7857,7 @@ window.addEventListener('load', function() {
       const ep    = 1 - Math.pow(1 - zoomP, 3);        // ease-out cubic
       const scale = 1 + (maxScale - 1) * ep;
 
-      gsap.set(sticky, { scale, transformOrigin: `${originX}% ${originY}%` });
+      gsap.set(sticky, { scale, transformOrigin: originStr });
 
       // Animate border-radius from 10px to 0 as zoom progresses
       const borderRadiusProgress = Math.min(p / 0.60, 1);
