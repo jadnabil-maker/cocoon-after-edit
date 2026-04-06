@@ -496,165 +496,313 @@ h1.headline .dim { color:var(--red); }
 }
 
 /* ══════════════════════════════
-   STATEMENT SECTION — lightweight rebuild
+   STATEMENT SECTION
 ══════════════════════════════ */
 #statement-section {
   min-height: 100vh;
   background: #000;
   position: relative;
+}
+#statement-inner {
+  position: relative;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  padding: 120px 40px;
+  contain: paint;
 }
 
-#statement-section::before { display: none; }
-
-/* توهج خلفي خفيف — opacity فقط، صفر GPU ثقيل */
-#statement-section::after {
-  content: '';
+/* نبض أحمر خفيف */
+#statement-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 75% 55% at 50% 50%,
-    rgba(255,0,25,0.055) 0%, transparent 68%);
-  opacity: 0;
+  background: radial-gradient(ellipse 55% 40% at 50% 55%,
+    rgba(255,0,25,0.06) 0%,
+    transparent 70%);
   pointer-events: none;
-  transition: opacity 1.6s ease;
-  z-index: 0;
-}
-#statement-section.st-visible::after {
-  opacity: 1;
-  transition-delay: 0.4s;
-}
-
-#statement-inner {
-  position: relative;
-  width: 100%;
-  max-width: 1100px;
-  padding: 100px 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 64px;
-}
-
-/* ── كلمة مفتاحية فوق ── */
-#st-eyebrow {
-  font-family: 'Tajawal', sans-serif;
-  font-size: clamp(10px, 1.1vw, 13px);
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  color: var(--red);
-  text-transform: uppercase;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 1.4s ease;
 }
-#statement-section.st-visible #st-eyebrow {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.1s;
-}
+#statement-section.glow-active #statement-glow { opacity: 1; }
 
-/* ── الشبكة الثلاثية ── */
-#st-grid {
-  display: grid;
-  grid-template-columns: 1fr 1px 1fr 1px 1fr;
-  gap: 0;
-  width: 100%;
-  align-items: center;
-}
-
-/* فاصل عمودي — يرسم نفسه عند الظهور */
-.st-divider {
-  width: 1px;
-  height: 80px;
-  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent);
-  align-self: center;
-  transform: scaleY(0);
-  transform-origin: center;
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-}
-#statement-section.st-visible .st-divider:nth-child(2) { transform: scaleY(1); transition-delay: 0.38s; }
-#statement-section.st-visible .st-divider:nth-child(4) { transform: scaleY(1); transition-delay: 0.54s; }
-
-/* ── بطاقة كل رقم ── */
-.st-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding: 0 32px;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(28px) scale(0.95);
-  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-}
-#statement-section.st-visible .st-card:nth-child(1) { opacity:1; transform:translateY(0) scale(1); transition-delay: 0.25s; }
-#statement-section.st-visible .st-card:nth-child(3) { opacity:1; transform:translateY(0) scale(1); transition-delay: 0.42s; }
-#statement-section.st-visible .st-card:nth-child(5) { opacity:1; transform:translateY(0) scale(1); transition-delay: 0.59s; }
-
-.st-num {
+/* الرقم الديكوري الضخم */
+#statement-deco-num {
+  position: absolute;
+  left: -0.04em;
+  bottom: -0.18em;
   font-family: 'Lifta Swash', serif;
-  font-size: clamp(64px, 9vw, 130px);
+  font-size: clamp(240px, 32vw, 500px);
   line-height: 1;
-  color: #fff;
-  letter-spacing: -0.02em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.022);
+  pointer-events: none;
+  user-select: none;
   direction: ltr;
-}
-.st-num .st-unit {
-  font-size: 0.42em;
-  vertical-align: super;
-  color: var(--red);
-  letter-spacing: 0.04em;
-}
-
-.st-label {
-  font-family: 'Tajawal', sans-serif;
-  font-size: clamp(13px, 1.4vw, 16px);
-  font-weight: 400;
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 0.06em;
-  line-height: 1.5;
-  max-width: 160px;
-}
-
-/* ── السطر السفلي ── */
-#st-tagline {
-  font-family: 'Lifta Swash', serif;
-  font-size: clamp(22px, 3.2vw, 46px);
-  color: rgba(255,255,255,0.88);
-  letter-spacing: 0.04em;
-  text-align: center;
-}
-/* كل كلمة تظهر بشكل منفصل — transform+opacity فقط، خفيف تماماً */
-#st-tagline > span {
-  display: inline-block;
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-40px);
 }
-#statement-section.st-visible #st-tagline > span:nth-child(1) { opacity:1; transform:translateY(0); transition-delay: 0.78s; }
-#statement-section.st-visible #st-tagline > span:nth-child(2) { opacity:1; transform:translateY(0); transition-delay: 0.95s; }
-#statement-section.st-visible #st-tagline > span:nth-child(3) { opacity:1; transform:translateY(0); transition-delay: 1.12s; }
-#statement-section.st-visible #st-tagline > span:nth-child(4) { opacity:1; transform:translateY(0); transition-delay: 1.29s; }
-#st-tagline .st-red { color: var(--red); }
 
-/* ── موبايل ── */
-@media (max-width: 768px) {
-  #statement-inner {
-    padding: 80px 24px;
-    gap: 44px;
-  }
-  #st-grid {
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0;
-  }
-  .st-divider { display: none; }
-  .st-card { padding: 0 10px; gap: 10px; }
-  .st-num { font-size: clamp(40px, 11vw, 64px); }
-  .st-label { font-size: 11px; max-width: 90px; }
-  #st-tagline { font-size: clamp(18px, 5vw, 28px); }
+/* ── WRAP ── */
+#statement-wrap {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* will-change للأداء */
+.word { will-change: filter, transform, opacity, color; }
+
+/* shimmer sweep يمر فوق النص بعد اكتمال الكشف */
+#statement-text {
+  font-family: 'Lifta Swash', serif;
+  font-size: clamp(44px, 7vw, 104px);
+  line-height: 1.18;
+  direction: inherit;
+  letter-spacing: 0.03em;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.08em;
+  position: relative;
+}
+
+/* English: smaller text to fit inside circle */
+[lang="en"] #statement-text {
+  font-size: clamp(22px, 3.5vw, 52px);
+  line-height: 1.3;
+}
+
+[lang="en"] #statement-text .word {
+  margin: 0 0.04em;
+}
+
+[lang="en"] #statement-text .st-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* سطر */
+.st-line {
+  display: block;
+}
+
+/* ── كل كلمة — blur + clip reveal ── */
+.word {
+  display: inline-block;
+  position: relative;
+  margin: 0 0.10em;
+  cursor: default;
+
+  color: rgba(255,255,255,0);
+  filter: blur(18px);
+  transform: translateY(0.15em) scale(0.96);
+  opacity: 0;
+
+  transition:
+    color      0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    filter     0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform  0.60s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity    0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.word.revealing {
+  color: rgba(255,255,255,0.35);
+  filter: blur(6px);
+  transform: translateY(0.05em) scale(0.98);
+  opacity: 0.6;
+}
+
+.word.revealed {
+  color: rgba(255,255,255,0.95);
+  filter: blur(0px);
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.word.highlight {
+  color: rgba(255,0,25,0);
+}
+.word.highlight.revealing {
+  color: rgba(255,0,25,0.4);
+  filter: blur(8px);
+  opacity: 0.55;
+}
+.word.highlight.revealed {
+  color: var(--red);
+  filter: blur(0px);
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* ══════════════════════════════
+   FOG / GLOW LIGHTING SYSTEM
+══════════════════════════════ */
+.statement-fog {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  will-change: opacity, transform;
+}
+
+/* ── الضباب الأحمر من الأسفل ── */
+#fog-bottom {
+  inset: 0;
+  background: radial-gradient(ellipse 120% 50% at 50% 100%,
+    rgba(255, 0, 25, 0.55) 0%,
+    rgba(180, 0, 20, 0.28) 30%,
+    rgba(80, 0, 10, 0.10) 55%,
+    transparent 80%);
+  filter: blur(40px);
+  opacity: 0;
+  transform: translateY(30%);
+}
+
+/* ── الضباب الأحمر من الأعلى ── */
+#fog-top {
+  inset: 0;
+  background: radial-gradient(ellipse 100% 40% at 50% -10%,
+    rgba(255, 0, 25, 0.10) 0%,
+    rgba(140, 0, 15, 0.05) 35%,
+    transparent 70%);
+  filter: blur(50px);
+  opacity: 0;
+  transform: translateY(-30%);
+}
+
+/* ── الضباب من اليسار ── */
+#fog-left {
+  inset: 0;
+  background: radial-gradient(ellipse 50% 80% at -10% 50%,
+    rgba(255, 0, 25, 0.40) 0%,
+    rgba(120, 0, 15, 0.18) 40%,
+    transparent 75%);
+  filter: blur(45px);
+  opacity: 0;
+  transform: translateX(-40%);
+}
+
+/* ── الضباب من اليمين ── */
+#fog-right {
+  inset: 0;
+  background: radial-gradient(ellipse 50% 80% at 110% 50%,
+    rgba(255, 0, 25, 0.40) 0%,
+    rgba(120, 0, 15, 0.18) 40%,
+    transparent 75%);
+  filter: blur(45px);
+  opacity: 0;
+  transform: translateX(40%);
+}
+
+/* ── التوهج المركزي العميق ── */
+#fog-center {
+  inset: 0;
+  background: radial-gradient(ellipse 60% 55% at 50% 50%,
+    rgba(255, 0, 25, 0.08) 0%,
+    rgba(200, 0, 20, 0.04) 30%,
+    transparent 65%);
+  filter: blur(60px);
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+/* ── ضباب الزوايا - زاوية يسار أسفل ── */
+#fog-corner-bl {
+  inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 0% 100%,
+    rgba(255, 0, 25, 0.48) 0%,
+    rgba(150, 0, 18, 0.20) 40%,
+    transparent 70%);
+  filter: blur(35px);
+  opacity: 0;
+  transform: translate(-30%, 30%);
+}
+
+/* ── ضباب الزوايا - زاوية يمين أسفل ── */
+#fog-corner-br {
+  inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 100% 100%,
+    rgba(255, 0, 25, 0.48) 0%,
+    rgba(150, 0, 18, 0.20) 40%,
+    transparent 70%);
+  filter: blur(35px);
+  opacity: 0;
+  transform: translate(30%, 30%);
+}
+
+/* ── ضباب الزوايا - زاوية يسار أعلى ── */
+#fog-corner-tl {
+  inset: 0;
+  background: radial-gradient(ellipse 55% 55% at 0% 0%,
+    rgba(255, 0, 25, 0.12) 0%,
+    rgba(100, 0, 12, 0.04) 40%,
+    transparent 70%);
+  filter: blur(40px);
+  opacity: 0;
+  transform: translate(-30%, -30%);
+}
+
+/* ── ضباب الزوايا - زاوية يمين أعلى ── */
+#fog-corner-tr {
+  inset: 0;
+  background: radial-gradient(ellipse 55% 55% at 100% 0%,
+    rgba(255, 0, 25, 0.12) 0%,
+    rgba(100, 0, 12, 0.04) 40%,
+    transparent 70%);
+  filter: blur(40px);
+  opacity: 0;
+  transform: translate(30%, -30%);
+}
+
+/* ── طبقة الضباب المتحركة (breathing) ── */
+#fog-breath {
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 55%,
+    rgba(255, 0, 25, 0.06) 0%,
+    rgba(180, 0, 20, 0.03) 40%,
+    transparent 70%);
+  filter: blur(70px);
+  opacity: 0;
+  transform: scale(0.6);
+  animation: fogBreathing 6s ease-in-out infinite;
+}
+
+@keyframes fogBreathing {
+  0%, 100% { transform: scale(1) translate(0, 0); }
+  30% { transform: scale(1.05) translate(1%, -0.5%); }
+  60% { transform: scale(0.97) translate(-0.5%, 0.8%); }
+}
+
+/* ── تأثير الحبيبات الخاص بقسم البيان ── */
+#statement-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  mix-blend-mode: overlay;
+}
+
+/* ── RED PATH ── */
+#red-path-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  overflow: visible;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* ══════════════════════════════
@@ -1169,6 +1317,11 @@ h1.headline .dim { color:var(--red); }
     font-size: 10px;
   }
 
+  /* ── Statement ── */
+  #statement-inner {
+    padding: 80px 24px;
+  }
+
   /* ── Showcase ── */
   .stair-layer[data-depth="1"],
   .stair-layer[data-depth="2"],
@@ -1404,6 +1557,11 @@ h1.headline .dim { color:var(--red); }
   /* ── Hero ── */
   .nav { padding: 24px 32px; }
   .clients-marquee-wrap { width: 68vw; top: 64px; }
+
+  /* ── Statement ── */
+  #statement-section .statement-text {
+    font-size: clamp(32px, 5.5vw, 60px);
+  }
 
   /* ── Services ── */
   #services-section { min-height: 100vh; }
@@ -4347,13 +4505,29 @@ html[dir="ltr"] #contactEmail {
 
 /* ══════════════════════════════════════════════════════════════
    MOBILE PERFORMANCE OPTIMIZATIONS
-   تقليل الـ animation على الموبايل لتحسين الأداء
+   تقليل الـ blur والـ animation على الموبايل لتحسين الأداء
+   لا يتغير أي شيء في الشكل - فقط قيم أخف للـ GPU
    ══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
+  /* تقليل الـ fog blur - نفس التأثير البصري بثقل أقل */
+  #fog-bottom  { filter: blur(12px); }
+  #fog-top     { filter: blur(14px); }
+  #fog-left    { filter: blur(12px); }
+  #fog-right   { filter: blur(12px); }
+  #fog-center  { filter: blur(16px); }
+  #fog-corner-bl, #fog-corner-br { filter: blur(10px); }
+  #fog-corner-tl, #fog-corner-tr { filter: blur(10px); }
+  #fog-breath  { filter: blur(18px); animation: none; }
+
   /* تقليل backdrop-filter - أثقل عنصر GPU على الموبايل */
   .contact-toggle-btn {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+  }
+
+  /* تعطيل fogBreathing animation على الموبايل */
+  @keyframes fogBreathing {
+    0%, 100% { transform: scale(1); }
   }
 
   /* تقليل will-change على الموبايل - يسبب memory pressure */
@@ -4596,29 +4770,45 @@ html[dir="ltr"] #contactEmail {
 <!-- ══ STATEMENT SECTION ══ -->
 <section id="statement-section">
   <div id="statement-inner">
-    <p id="st-eyebrow" data-ar="لماذا كوكون" data-en="Why Cocoon">لماذا كوكون</p>
+  <div id="statement-glow"></div>
 
-    <div id="st-grid">
-      <div class="st-card">
-        <div class="st-num" data-ar-num="١٢" data-en-num="12">١٢<span class="st-unit" data-ar="ساعة" data-en="hrs">ساعة</span></div>
-        <div class="st-label" data-ar="من الفكرة إلى الموقع الحي" data-en="From idea to live website">من الفكرة إلى الموقع الحي</div>
-      </div>
-      <div class="st-divider"></div>
-      <div class="st-card">
-        <div class="st-num" data-ar-num="١٠٠" data-en-num="100">١٠٠<span class="st-unit" data-ar="٪" data-en="%">٪</span></div>
-        <div class="st-label" data-ar="مخصص لعلامتك التجارية" data-en="Tailored to your brand">مخصص لعلامتك التجارية</div>
-      </div>
-      <div class="st-divider"></div>
-      <div class="st-card">
-        <div class="st-num">∞</div>
-        <div class="st-label" data-ar="دعم بلا حدود" data-en="Unlimited support">دعم بلا حدود</div>
-      </div>
-    </div>
+  <!-- ══ FOG / GLOW LIGHTING LAYERS ══ -->
+  <div id="fog-center" class="statement-fog"></div>
+  <div id="fog-bottom" class="statement-fog"></div>
+  <div id="fog-top" class="statement-fog"></div>
+  <div id="fog-left" class="statement-fog"></div>
+  <div id="fog-right" class="statement-fog"></div>
+  <div id="fog-corner-bl" class="statement-fog"></div>
+  <div id="fog-corner-br" class="statement-fog"></div>
+  <div id="fog-corner-tl" class="statement-fog"></div>
+  <div id="fog-corner-tr" class="statement-fog"></div>
+  <div id="fog-breath" class="statement-fog"></div>
+  <div id="statement-grain"></div>
 
-    <p id="st-tagline">
-      <span class="st-red" data-ar="صُمِّم" data-en="Built">صُمِّم</span><span data-ar=" ليُبهر،" data-en=" to impress,"> ليُبهر،</span>
-      <span class="st-red" data-ar=" سُلِّم" data-en=" delivered"> سُلِّم</span><span data-ar=" ليُدهش." data-en=" to amaze."> ليُدهش.</span>
+  <!-- ══ RED PATH ══ -->
+  <svg id="red-path-svg" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="red-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <path id="red-path-line" fill="none" stroke="#ff0019" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" filter="url(#red-glow)" d="M0 0"/>
+    <circle id="path-dot" r="3.5" fill="#ff0019" filter="url(#red-glow)" cx="-999" cy="-999"/>
+  </svg>
+
+  <div id="statement-wrap">
+    <p id="statement-text">
+      <span class="st-line">
+        <span class="word" data-index="0" data-ar="موقعك" data-en="Your website">موقعك</span><span class="word" data-index="1" data-ar="الاحترافي" data-en="professional">الاحترافي</span><span class="word" data-index="2" data-ar="جاهز" data-en="is ready">جاهز</span>
+      </span>
+      <span class="st-line">
+        <span class="word" data-index="3" data-ar="خلال" data-en="in">خلال</span><span class="word highlight" data-index="4" data-ar="12" data-en="12">12</span><span class="word highlight" data-index="5" data-ar="ساعة" data-en="hours">ساعة</span>
+      </span>
     </p>
+  </div>
+  
   </div>
 </section>
 
@@ -7278,70 +7468,179 @@ function revealHero() {
 })();
 
 /* ══════════════════════════════
-   STATEMENT SECTION — reveal + counter animation
+   STATEMENT SECTION ANIMATIONS
+══════════════════════════════ */
+
+// ── الرقم الديكوري ──
+gsap.to('#statement-deco-num', {
+  opacity: 1,
+  x: 0,
+  duration: 2.2,
+  ease: 'power3.out',
+  scrollTrigger: {
+    trigger: '#statement-section',
+    start: 'top 80%',
+    toggleActions: 'play none none reverse',
+  }
+});
+
+/* ══════════════════════════════
+   FOG / GLOW SCROLL ANIMATIONS
 ══════════════════════════════ */
 (function(){
-  var stSec = document.getElementById('statement-section');
-  if (!stSec) return;
-
-  /* ── Arabic numeral converter ── */
-  var AR = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-  function toAr(n){ return String(n).replace(/\d/g, function(d){ return AR[+d]; }); }
-  function isRtl(){ return document.documentElement.dir === 'rtl'; }
-
-  /* ── Counter via requestAnimationFrame — CPU only, no GPU ── */
-  function runCounter(numEl, target, duration) {
-    var unit = numEl.querySelector('.st-unit');
-    var unitHTML = unit ? unit.outerHTML : '';
-    var t0 = null;
-    function tick(ts) {
-      if (!t0) t0 = ts;
-      var p = Math.min((ts - t0) / duration, 1);
-      var eased = 1 - Math.pow(1 - p, 3);
-      var val = Math.round(eased * target);
-      numEl.innerHTML = (isRtl() ? toAr(val) : String(val)) + unitHTML;
-      if (p < 1) requestAnimationFrame(tick);
+  const fogTL = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#statement-section',
+      start: 'top 70%',
+      toggleActions: 'play none none reset',
     }
-    requestAnimationFrame(tick);
-  }
+  });
 
-  var countersRun = false;
+  /* التوهج المركزي — يظهر أولاً */
+  fogTL.to('#fog-center', {
+    opacity: 1,
+    scale: 1,
+    duration: 1,
+    ease: 'power2.out',
+  }, 0);
 
-  function onEnter() {
-    stSec.classList.add('st-visible');
-    if (countersRun) return;
-    countersRun = true;
-    /* تشغيل counter بعد ظهور البطاقات (delay 0.25s + قليل) */
-    setTimeout(function(){
-      stSec.querySelectorAll('.st-num[data-en-num]').forEach(function(el){
-        var target = parseInt(el.getAttribute('data-en-num'), 10);
-        if (!isNaN(target)) runCounter(el, target, target > 50 ? 1400 : 1000);
-      });
-    }, 450);
-  }
+  /* الضباب من الأسفل — أقوى تأثير */
+  fogTL.to('#fog-bottom', {
+    opacity: 1,
+    y: '0%',
+    duration: 1,
+    ease: 'power2.out',
+  }, 0.1);
 
-  function onLeave() {
-    stSec.classList.remove('st-visible');
-    countersRun = false;
-    /* إعادة الأرقام لـ 0 حتى تعد من جديد عند العودة */
-    stSec.querySelectorAll('.st-num[data-en-num]').forEach(function(el){
-      var unit = el.querySelector('.st-unit');
-      var unitHTML = unit ? unit.outerHTML : '';
-      el.innerHTML = (isRtl() ? '٠' : '0') + unitHTML;
-    });
-  }
+  /* الضباب من الأعلى */
+  fogTL.to('#fog-top', {
+    opacity: 1,
+    y: '0%',
+    duration: 1,
+    ease: 'power2.out',
+  }, 0.15);
 
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (e.isIntersecting) {
-        onEnter();
-      } else if (e.boundingClientRect.top > 0) {
-        onLeave();
-      }
-    });
-  }, { threshold: 0.25 });
-  io.observe(stSec);
+  /* الضباب من الجوانب */
+  fogTL.to('#fog-left', {
+    opacity: 1,
+    x: '0%',
+    duration: 1,
+    ease: 'power2.out',
+  }, 0.2);
+
+  fogTL.to('#fog-right', {
+    opacity: 1,
+    x: '0%',
+    duration: 1,
+    ease: 'power2.out',
+  }, 0.2);
+
+  /* زوايا الأسفل — أقوى */
+  fogTL.to('#fog-corner-bl', {
+    opacity: 1,
+    x: '0%',
+    y: '0%',
+    duration: 1,
+    ease: 'power3.out',
+  }, 0.25);
+
+  fogTL.to('#fog-corner-br', {
+    opacity: 1,
+    x: '0%',
+    y: '0%',
+    duration: 1,
+    ease: 'power3.out',
+  }, 0.25);
+
+  /* زوايا الأعلى — أخف */
+  fogTL.to('#fog-corner-tl', {
+    opacity: 1,
+    x: '0%',
+    y: '0%',
+    duration: 1,
+    ease: 'power3.out',
+  }, 0.3);
+
+  fogTL.to('#fog-corner-tr', {
+    opacity: 1,
+    x: '0%',
+    y: '0%',
+    duration: 1,
+    ease: 'power3.out',
+  }, 0.3);
+
+  /* طبقة التنفس المتحركة */
+  fogTL.to('#fog-breath', {
+    opacity: 1,
+    scale: 1,
+    duration: 1,
+    ease: 'power2.out',
+  }, 0.35);
+
+  /* الحبيبات */
+  fogTL.to('#statement-grain', {
+    opacity: 0.045,
+    duration: 1,
+    ease: 'power1.out',
+  }, 0.4);
+
 })();
+
+// ── الكلمات — blur dissolve مع stagger تلقائي ──
+const stWords   = document.querySelectorAll('.word');
+const stSection = document.getElementById('statement-section');
+const total     = stWords.length;
+
+// نضبط transition-delay لكل كلمة مرة واحدة
+const WORD_STAGGER_MS = 300; // ms بين كل كلمة وما يليها
+
+stWords.forEach((word, i) => {
+  word.style.transitionDelay = `${i * (WORD_STAGGER_MS / 1000)}s`;
+});
+
+let wordTimers = [];
+
+function revealWords() {
+  wordTimers.forEach(clearTimeout);
+  wordTimers = [];
+
+  // نعيد الـ stagger delays قبل البدء (ممكن تكون صُفِّرت في resetWords)
+  stWords.forEach((w, i) => {
+    w.style.transitionDelay = `${i * (WORD_STAGGER_MS / 1000)}s`;
+  });
+
+  // مرحلة ١: revealing (blur جزئي)
+  stWords.forEach(w => w.classList.add('revealing'));
+
+  // مرحلة ٢: revealed بعد 300ms — الـ CSS transition-delay يتكفل بالـ stagger
+  wordTimers.push(setTimeout(() => {
+    stWords.forEach(w => w.classList.add('revealed'));
+  }, 300));
+
+  // مرحلة ٣: glow بعد اكتمال آخر كلمة
+  const glowDelay = 300 + (total - 1) * WORD_STAGGER_MS + 650;
+  wordTimers.push(setTimeout(() => {
+    stSection.classList.add('glow-active');
+  }, glowDelay));
+}
+
+function resetWords() {
+  wordTimers.forEach(clearTimeout);
+  wordTimers = [];
+  // نصفّر الـ delay حتى تختفي الكلمات فوراً بدون انتظار الـ stagger
+  stWords.forEach(w => {
+    w.style.transitionDelay = '0s';
+    w.classList.remove('revealed', 'revealing');
+  });
+  stSection.classList.remove('glow-active');
+}
+
+ScrollTrigger.create({
+  trigger: '#statement-section',
+  start: 'top 60%',
+  onEnter:     revealWords,
+  onLeaveBack: resetWords,
+});
 
 // ══════════════════════════════
 // HERO FADE OUT ON SCROLL
@@ -7462,7 +7761,229 @@ window.addEventListener('load', function() {
   }, 5500);
 });
 
+/* ── RED PATH: LINE + ORBIT ── */
+(function(){
+  const pathEl  = document.getElementById('red-path-line');
+  const dotEl   = document.getElementById('path-dot');
+  const heroEl  = document.getElementById('hero');
 
+  // نرسم مسارين منفصلين: خط + ellipse
+  // ونتحكم في كل واحد بشكل مستقل
+
+  const linePath = document.createElementNS('http://www.w3.org/2000/svg','path');
+  linePath.setAttribute('fill','none');
+  linePath.setAttribute('stroke','#ff0019');
+  linePath.setAttribute('stroke-width','1.5');
+  linePath.setAttribute('stroke-linecap','round');
+  linePath.setAttribute('filter','url(#red-glow)');
+  linePath.style.opacity = '0';
+
+  const orbitPath = document.createElementNS('http://www.w3.org/2000/svg','path');
+  orbitPath.setAttribute('fill','none');
+  orbitPath.setAttribute('stroke','#ff0019');
+  orbitPath.setAttribute('stroke-width','1.5');
+  orbitPath.setAttribute('stroke-linecap','round');
+  orbitPath.setAttribute('filter','url(#red-glow)');
+  orbitPath.style.opacity = '0';
+
+  // نضيفهم للـ SVG بدل الـ path الأصلي
+  const svg = document.getElementById('red-path-svg');
+  pathEl.replaceWith(linePath);
+  svg.insertBefore(orbitPath, dotEl);
+
+  // نسبة السكرول: 0..LINE_END = خط، LINE_END..1 = دوران
+  const LINE_END = 0.28; // أول 28% = الخط ينزل
+
+  let lineLen = 0;
+  let orbitLen = 0;
+  let frozenLineD = null;
+  let frozenLineLen = 0;
+
+  function buildOrbitD(cx, cy, rx, ry) {
+    const off = 10;
+    const entryX = cx, entryY = cy - ry;
+    const rX = cx+rx, rY = cy;
+    const bX = cx,    bY = cy+ry;
+    const lX = cx-rx, lY = cy;
+    return [
+      `M ${entryX} ${entryY}`,
+      `A ${rx} ${ry} 0 0 1 ${rX} ${rY}`,
+      `A ${rx} ${ry} 0 0 1 ${bX} ${bY}`,
+      `A ${rx} ${ry} 0 0 1 ${lX} ${lY}`,
+      `A ${rx} ${ry} 0 0 1 ${entryX} ${entryY-2}`,
+      `A ${rx+off} ${ry+off*0.4} 0 0 1 ${rX+off} ${rY+off*0.2}`,
+      `A ${rx+off} ${ry+off*0.4} 0 0 1 ${bX} ${bY+off*0.5}`,
+      `A ${rx+off} ${ry+off*0.4} 0 0 1 ${lX-off} ${lY+off*0.2}`,
+      `A ${rx+off} ${ry+off*0.4} 0 0 1 ${entryX+rx*0.3} ${entryY+off}`,
+    ].join(' ');
+  }
+
+  function buildLineDAndOrbit(heroBottom) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const cx = vw / 2;
+    const cy = vh / 2;
+    const rx = Math.min(vw * 0.42, 560);
+    const ry = Math.min(vh * 0.18, 130);
+
+    const entryX = cx;
+    const entryY = cy - ry;
+
+    // خط ناعم من أسفل الهيرو لأعلى الـ ellipse
+    const cp1X = cx + 15;
+    const cp1Y = Math.max(heroBottom * 0.6, entryY);
+    const cp2X = cx - 15;
+    const cp2Y = entryY;
+
+    const lineD = `M ${cx} ${heroBottom} C ${cp1X} ${cp1Y} ${cp2X} ${cp2Y} ${entryX} ${entryY}`;
+    linePath.setAttribute('d', lineD);
+
+    const orbitD = buildOrbitD(cx, cy, rx, ry);
+    orbitPath.setAttribute('d', orbitD);
+
+    requestAnimationFrame(() => {
+      try {
+        lineLen  = linePath.getTotalLength();
+        orbitLen = orbitPath.getTotalLength();
+        linePath.style.strokeDasharray  = lineLen  + 'px';
+        linePath.style.strokeDashoffset = lineLen  + 'px';
+        orbitPath.style.strokeDasharray  = orbitLen + 'px';
+        orbitPath.style.strokeDashoffset = orbitLen + 'px';
+        // Build orbit lookup table — 200 samples, done once at init/resize
+        orbitLUT = [];
+        const SAMPLES = 200;
+        for (let i = 0; i <= SAMPLES; i++) {
+          const pt = orbitPath.getPointAtLength(orbitLen * i / SAMPLES);
+          orbitLUT.push({ x: pt.x, y: pt.y });
+        }
+      } catch(e){}
+    });
+  }
+
+  // Cache hero bottom position — only changes on resize, not on scroll
+  let cachedHeroAbsBottom = heroEl.offsetTop + heroEl.offsetHeight;
+  let lastFixedBottom = null;
+  let lastLineLen = 0;
+  let orbitLUT = []; // lookup table for orbit dot positions — built once at init
+  // Cache bezier control points for dot positioning
+  let _bCx = 0, _bCp1x = 0, _bCp1y = 0, _bCp2x = 0, _bCp2y = 0, _bEntryX = 0, _bEntryY = 0;
+
+  // Analytical cubic Bézier point — no DOM reads, no layout flush
+  function bezierPoint(t, x0,y0, x1,y1, x2,y2, x3,y3) {
+    const u = 1 - t;
+    return {
+      x: u*u*u*x0 + 3*u*u*t*x1 + 3*u*t*t*x2 + t*t*t*x3,
+      y: u*u*u*y0 + 3*u*u*t*y1 + 3*u*t*t*y2 + t*t*t*y3
+    };
+  }
+
+  buildLineDAndOrbit(-30);
+  window.addEventListener('resize', () => {
+    lastFixedBottom = null;
+    lastLineLen = 0;
+    buildLineDAndOrbit(-30);
+  });
+
+  // ── تحديث الـ path بناءً على progress 0→1 ──
+  function runPathUpdate(p) {
+    if (!lineLen || !orbitLen) return;
+
+    if (p <= LINE_END) {
+      if (lastFixedBottom === null) {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const cx = vw / 2;
+        const cy = vh / 2;
+        const rx = Math.min(vw * 0.42, 560);
+        const ry = Math.min(vh * 0.18, 130);
+        const entryX = cx, entryY = cy - ry;
+        const cp1Y = cy * 0.3;
+        const cp2Y = entryY;
+        const lineD = `M ${cx} ${-30} C ${cx+15} ${cp1Y} ${cx-15} ${cp2Y} ${entryX} ${entryY}`;
+        linePath.setAttribute('d', lineD);
+        lastLineLen = linePath.getTotalLength();
+        frozenLineD   = lineD;
+        frozenLineLen = lastLineLen;
+        lastFixedBottom = -30;
+        _bCx = cx; _bCp1x = cx+15; _bCp1y = cp1Y;
+        _bCp2x = cx-15; _bCp2y = cp2Y; _bEntryX = entryX; _bEntryY = entryY;
+      }
+
+      const lp = p / LINE_END;
+      linePath.style.strokeDasharray  = lastLineLen + 'px';
+      linePath.style.strokeDashoffset = (lastLineLen * (1 - lp)) + 'px';
+      linePath.style.opacity  = '1';
+      orbitPath.style.opacity = '0';
+      orbitPath.style.strokeDashoffset = orbitLen + 'px';
+
+      const pt = bezierPoint(lp,
+        _bCx, lastFixedBottom,
+        _bCp1x, _bCp1y,
+        _bCp2x, _bCp2y,
+        _bEntryX, _bEntryY
+      );
+      dotEl.setAttribute('cx', pt.x);
+      dotEl.setAttribute('cy', pt.y);
+      dotEl.style.opacity = '1';
+
+    } else {
+      if (frozenLineD) {
+        linePath.setAttribute('d', frozenLineD);
+        linePath.style.strokeDasharray = frozenLineLen + 'px';
+      }
+      linePath.style.strokeDashoffset = '0px';
+      linePath.style.opacity  = '1';
+
+      const op = (p - LINE_END) / (1 - LINE_END);
+      orbitPath.style.opacity = '1';
+      orbitPath.style.strokeDashoffset = (orbitLen * (1 - op)) + 'px';
+
+      if (orbitLUT.length > 1) {
+        const lutIdx = Math.min(Math.floor(op * (orbitLUT.length - 1)), orbitLUT.length - 2);
+        const frac   = op * (orbitLUT.length - 1) - lutIdx;
+        const ptA    = orbitLUT[lutIdx];
+        const ptB    = orbitLUT[lutIdx + 1];
+        dotEl.setAttribute('cx', ptA.x + (ptB.x - ptA.x) * frac);
+        dotEl.setAttribute('cy', ptA.y + (ptB.y - ptA.y) * frac);
+        dotEl.setAttribute('r', '4');
+        dotEl.style.opacity = '1';
+      }
+    }
+  }
+
+  // ── Time-based animation — نفس مدة الكلمات (2.5 ثانية) ──
+  const PATH_DURATION = 2.5;
+  const pathProg = { value: 0 };
+  let   pathTween = null;
+
+  function startPathAnim() {
+    if (pathTween) pathTween.kill();
+    pathProg.value  = 0;
+    lastFixedBottom = null;
+    pathTween = gsap.to(pathProg, {
+      value: 1,
+      duration: PATH_DURATION,
+      ease: 'none',
+      onUpdate: () => runPathUpdate(pathProg.value)
+    });
+  }
+
+  function resetPathAnim() {
+    if (pathTween) { pathTween.kill(); pathTween = null; }
+    pathProg.value  = 0;
+    lastFixedBottom = null;
+    linePath.style.opacity  = '0';
+    orbitPath.style.opacity = '0';
+    dotEl.style.opacity     = '0';
+  }
+
+  ScrollTrigger.create({
+    trigger: '#statement-section',
+    start: 'top 60%',
+    onEnter:     startPathAnim,
+    onLeaveBack: resetPathAnim,
+  });
+})();
 
 /* ══════════════════════════════
    SERVICES SECTION LOGIC
@@ -7539,148 +8060,86 @@ window.addEventListener('load', function() {
     });
   });
 
-  /* ── Entrance animation — مبسّط على موبايل/iPad، كامل على desktop ── */
-  const isMobileEntry = window.matchMedia('(max-width: 1024px)').matches;
+  /* ── Scale-in entrance animation ── */
+  gsap.set('#services-inner', { scale: 0.6, y: 120, opacity: 0, borderRadius: '40px' });
+  gsap.set('.services-nav-btn', { opacity: 0, y: -28, filter: 'blur(10px)', scale: 0.85 });
+  gsap.set('.services-grain-overlay', { opacity: 0 });
+  gsap.set('#services-progress-bar', { opacity: 0, y: 16 });
 
-  const firstPanel    = section.querySelector('.services-content-panel[data-panel="0"]');
+  const firstPanel   = section.querySelector('.services-content-panel[data-panel="0"]');
   const firstPanelEls = firstPanel
     ? firstPanel.querySelectorAll('.panel-counter, .panel-title, .panel-desc, .panel-tagline')
     : [];
   if (firstPanel) firstPanel.classList.add('panel-entrance-pending');
 
-  gsap.set('.services-grain-overlay', { opacity: 0 });
-  gsap.set('#services-progress-bar', { opacity: 0, y: 16 });
-
   let navRevealed = false;
 
-  if (isMobileEntry) {
-    /* ─── موبايل: opacity + translateY فقط — صفر scrub، صفر blur ─── */
-    gsap.set('#services-inner', { opacity: 0, y: 50 });
-    gsap.set('.services-nav-btn', { opacity: 0, y: -20 });
-
-    ScrollTrigger.create({
-      trigger: '#services-section',
-      start: 'top 85%',
-      onEnter: () => {
-        gsap.to('#services-inner', { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' });
-        gsap.to('.services-grain-overlay', { opacity: 0.04, duration: 1, ease: 'power2.out' });
-      },
-      onLeaveBack: () => {
-        gsap.set('#services-inner', { opacity: 0, y: 50 });
-        gsap.set('.services-nav-btn', { opacity: 0, y: -20 });
-        gsap.set('.services-grain-overlay', { opacity: 0 });
-        gsap.set('#services-progress-bar', { opacity: 0, y: 16 });
-        if (firstPanel) {
-          gsap.set(firstPanelEls, { clearProps: 'all' });
-          firstPanel.classList.add('panel-entrance-pending');
-        }
-        navRevealed = false;
-        if (fillTween) fillTween.kill();
+  ScrollTrigger.create({
+    trigger: '#services-section',
+    start: 'top bottom',
+    end: 'top top',
+    scrub: 1,
+    onUpdate: (self) => {
+      const p  = self.progress;
+      const ep = 1 - Math.pow(1 - p, 3);
+      gsap.set('#services-inner', {
+        scale: 0.6 + 0.4 * ep,
+        y: 120 * (1 - ep),
+        opacity: ep,
+        borderRadius: (40 * (1 - ep)) + 'px'
+      });
+    },
+    onLeaveBack: () => {
+      gsap.set('#services-inner', { scale: 0.6, y: 120, opacity: 0, borderRadius: '40px' });
+      gsap.set('.services-nav-btn', { opacity: 0, y: -28, filter: 'blur(10px)', scale: 0.85 });
+      gsap.set('.services-grain-overlay', { opacity: 0 });
+      gsap.set('#services-progress-bar', { opacity: 0, y: 16 });
+      if (firstPanel) {
+        gsap.set(firstPanelEls, { clearProps: 'all' });
+        firstPanel.classList.add('panel-entrance-pending');
       }
-    });
+      navRevealed = false;
+      if (fillTween) fillTween.kill();
+    },
+    onEnter: () => {
+      gsap.set('#services-inner', { scale: 1, y: 0, opacity: 1, borderRadius: '0px' });
+      gsap.to('.services-grain-overlay', { opacity: 0.04, duration: 1.2, ease: 'power2.out' });
+    }
+  });
 
-    ScrollTrigger.create({
-      trigger: '#services-section',
-      start: 'top 60%',
-      onEnter: () => {
-        if (navRevealed) return;
-        navRevealed = true;
+  ScrollTrigger.create({
+    trigger: '#services-section',
+    start: 'top 50%',
+    onEnter: () => {
+      if (navRevealed) return;
+      navRevealed = true;
 
-        gsap.to('.services-nav-btn', {
-          opacity: 1, y: 0,
-          duration: 0.55, ease: 'power2.out', stagger: 0.1
-        });
-        gsap.to('#services-progress-bar', {
-          opacity: 1, y: 0, duration: 0.55, ease: 'power2.out', delay: 0.35
-        });
+      gsap.to('.services-nav-btn', {
+        opacity: 1, y: 0, filter: 'blur(0px)', scale: 1,
+        duration: 0.75, ease: 'power3.out', stagger: 0.13
+      });
 
-        if (firstPanel) {
-          firstPanel.classList.remove('panel-entrance-pending');
-          gsap.set(firstPanelEls, { opacity: 0, y: 22 });
-          gsap.to(firstPanelEls, {
-            opacity: 1, y: 0,
-            duration: 0.55, ease: 'power2.out', stagger: 0.1, delay: 0.5,
-            onComplete: () => {
-              gsap.set(firstPanelEls, { clearProps: 'all' });
-              setActivePanel(0);
-            }
-          });
-        } else {
-          setActivePanel(0);
-        }
-      }
-    });
+      gsap.to('#services-progress-bar', {
+        opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', delay: 0.5
+      });
 
-  } else {
-    /* ─── Desktop: original scrub animation ─── */
-    gsap.set('#services-inner', { scale: 0.6, y: 120, opacity: 0, borderRadius: '40px' });
-    gsap.set('.services-nav-btn', { opacity: 0, y: -28, filter: 'blur(10px)', scale: 0.85 });
-
-    ScrollTrigger.create({
-      trigger: '#services-section',
-      start: 'top bottom',
-      end: 'top top',
-      scrub: 1,
-      onUpdate: (self) => {
-        const p  = self.progress;
-        const ep = 1 - Math.pow(1 - p, 3);
-        gsap.set('#services-inner', {
-          scale: 0.6 + 0.4 * ep,
-          y: 120 * (1 - ep),
-          opacity: ep,
-          borderRadius: (40 * (1 - ep)) + 'px'
-        });
-      },
-      onLeaveBack: () => {
-        gsap.set('#services-inner', { scale: 0.6, y: 120, opacity: 0, borderRadius: '40px' });
-        gsap.set('.services-nav-btn', { opacity: 0, y: -28, filter: 'blur(10px)', scale: 0.85 });
-        gsap.set('.services-grain-overlay', { opacity: 0 });
-        gsap.set('#services-progress-bar', { opacity: 0, y: 16 });
-        if (firstPanel) {
-          gsap.set(firstPanelEls, { clearProps: 'all' });
-          firstPanel.classList.add('panel-entrance-pending');
-        }
-        navRevealed = false;
-        if (fillTween) fillTween.kill();
-      },
-      onEnter: () => {
-        gsap.set('#services-inner', { scale: 1, y: 0, opacity: 1, borderRadius: '0px' });
-        gsap.to('.services-grain-overlay', { opacity: 0.04, duration: 1.2, ease: 'power2.out' });
-      }
-    });
-
-    ScrollTrigger.create({
-      trigger: '#services-section',
-      start: 'top 50%',
-      onEnter: () => {
-        if (navRevealed) return;
-        navRevealed = true;
-
-        gsap.to('.services-nav-btn', {
+      if (firstPanel) {
+        firstPanel.classList.remove('panel-entrance-pending');
+        gsap.set(firstPanelEls, { opacity: 0, y: 30, filter: 'blur(10px)', scale: 0.9 });
+        gsap.to(firstPanelEls, {
           opacity: 1, y: 0, filter: 'blur(0px)', scale: 1,
-          duration: 0.75, ease: 'power3.out', stagger: 0.13
+          duration: 0.75, ease: 'power3.out', stagger: 0.15, delay: 0.7,
+          onComplete: () => {
+            gsap.set(firstPanelEls, { clearProps: 'all' });
+            // Start auto-play after entrance animation
+            setActivePanel(0);
+          }
         });
-        gsap.to('#services-progress-bar', {
-          opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', delay: 0.5
-        });
-
-        if (firstPanel) {
-          firstPanel.classList.remove('panel-entrance-pending');
-          gsap.set(firstPanelEls, { opacity: 0, y: 30, filter: 'blur(10px)', scale: 0.9 });
-          gsap.to(firstPanelEls, {
-            opacity: 1, y: 0, filter: 'blur(0px)', scale: 1,
-            duration: 0.75, ease: 'power3.out', stagger: 0.15, delay: 0.7,
-            onComplete: () => {
-              gsap.set(firstPanelEls, { clearProps: 'all' });
-              setActivePanel(0);
-            }
-          });
-        } else {
-          setActivePanel(0);
-        }
+      } else {
+        setActivePanel(0);
       }
-    });
-  } /* end else desktop */
+    }
+  });
 
 })();
 
@@ -8533,23 +8992,6 @@ window.addEventListener('load', function() {
       emailInput.dir = 'ltr';
       emailInput.style.textAlign = lang === 'ar' ? 'right' : 'left';
     }
-
-    // Update statement section numbers
-    document.querySelectorAll('.st-num').forEach(function(numEl) {
-      var arNum = numEl.getAttribute('data-ar-num');
-      var enNum = numEl.getAttribute('data-en-num');
-      if (!arNum && !enNum) return;
-      // Rebuild: number text + unit span
-      var unitSpan = numEl.querySelector('.st-unit');
-      var unitText = unitSpan ? unitSpan.outerHTML : '';
-      numEl.innerHTML = (lang === 'ar' ? (arNum||enNum) : (enNum||arNum)) + unitText;
-      // Re-update unit span text via data-ar/data-en
-      var newUnit = numEl.querySelector('.st-unit');
-      if (newUnit) {
-        var uText = lang === 'ar' ? newUnit.getAttribute('data-ar') : newUnit.getAttribute('data-en');
-        if (uText) newUnit.textContent = uText;
-      }
-    });
 
     // Update showcase meta panel for current slide
     var metaTitle = document.getElementById('showcase-meta-title');
