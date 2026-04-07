@@ -6370,15 +6370,6 @@ html[dir="ltr"] #contactEmail {
   var _reverseInProgress   = false;
   var _animationCompleted  = false;
   var _upwardGuardHandlers = null;
-  var _justReversed        = false;
-  var _reverseCooldownTimer = null;
-
-  //cooldown: يمنع إعادة تشغيل onEnter فوراً بعد reverse — مهم جداً للموبايل/iOS
-  function _setReverseCooldown() {
-    _justReversed = true;
-    if (_reverseCooldownTimer) clearTimeout(_reverseCooldownTimer);
-    _reverseCooldownTimer = setTimeout(function() { _justReversed = false; }, 2000);
-  }
 
   function _doReverse() {
     if (_reverseInProgress) return;
@@ -6388,7 +6379,6 @@ html[dir="ltr"] #contactEmail {
     var afterReverse = function() {
       _reverseInProgress  = false;
       _animationCompleted = false;
-      _setReverseCooldown();
       // overlay أسود يغطي الـ scroll jump ثم يفيد أوت ليكشف features-section بشكل ناعم
       var fadeOverlay = document.createElement('div');
       fadeOverlay.style.cssText = 'position:fixed;inset:0;background:#000;z-index:99999;pointer-events:none;opacity:1;';
@@ -6429,22 +6419,6 @@ html[dir="ltr"] #contactEmail {
       return;
     }
     var _scrollTriggered = false;
-    // touch: للموبايل / iOS / سفاري — يلتقط اتجاه السحب للأعلى
-    var _touchStartY = 0;
-    function onTouchStart(e) {
-      _touchStartY = e.touches[0].clientY;
-    }
-    function onTouchMove(e) {
-      if (_scrollTriggered) return;
-      var currentY = e.touches[0].clientY;
-      var deltaY = currentY - _touchStartY;
-      // deltaY > 0 يعني الإصبع نزل = السكرول يطلع (للخلف)
-      if (deltaY > 10) {
-        e.preventDefault();
-        _scrollTriggered = true;
-        _doReverse();
-      }
-    }
     // scroll event: يشتغل دائماً حتى أثناء iOS inertia scrolling
     function onScroll() {
       if (_scrollTriggered) return;
@@ -6464,19 +6438,15 @@ html[dir="ltr"] #contactEmail {
       // أثناء التمرير للأعلى، وإزالة الـ guard هنا تسبب ظهور features-section
       // الـ scroll handler التالي يكفي لإزالة الـ guard عند التمرير الحقيقي لأسفل
     }
-    _upwardGuardHandlers = { onScroll: onScroll, onWheel: onWheel, onTouchStart: onTouchStart, onTouchMove: onTouchMove };
+    _upwardGuardHandlers = { onScroll: onScroll, onWheel: onWheel };
     window.addEventListener('scroll',  onScroll, { passive: true });
     document.addEventListener('wheel', onWheel,  { passive: false, capture: true });
-    document.addEventListener('touchstart', onTouchStart, { passive: true });
-    document.addEventListener('touchmove', onTouchMove,  { passive: false, capture: true });
   }
 
   function _removeUpwardScrollGuard() {
     if (!_upwardGuardHandlers) return;
-    window.removeEventListener('scroll',    _upwardGuardHandlers.onScroll);
-    document.removeEventListener('wheel',      _upwardGuardHandlers.onWheel, { capture: true });
-    document.removeEventListener('touchstart', _upwardGuardHandlers.onTouchStart);
-    document.removeEventListener('touchmove',  _upwardGuardHandlers.onTouchMove, { capture: true });
+    window.removeEventListener('scroll',  _upwardGuardHandlers.onScroll);
+    document.removeEventListener('wheel', _upwardGuardHandlers.onWheel, { capture: true });
     _upwardGuardHandlers = null;
   }
 
@@ -6611,7 +6581,6 @@ html[dir="ltr"] #contactEmail {
     trigger: section,
     start: 'top 70%',
     onEnter: () => {
-      if (_justReversed) return; // cooldown — لا تُعد تشغيل الزوم فوراً بعد reverse
       _removeUpwardScrollGuard();
       // أوقف السكرول فوراً لمنع تحرك الصفحة أثناء الـ fade
       if (typeof lenis !== 'undefined' && lenis && typeof lenis.stop === 'function') lenis.stop();
@@ -6642,7 +6611,6 @@ html[dir="ltr"] #contactEmail {
     onLeaveBack: () => {
       // لا تفعل شيئاً إذا الأنيميشن ما اكتمل — المستخدم مجرد يمرر للخلف عادي
       if (!_animationCompleted) return;
-      if (_justReversed) return; // cooldown
       _doReverse();
     }
   });
