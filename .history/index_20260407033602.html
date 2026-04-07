@@ -1371,8 +1371,8 @@ h1.headline .dim { color:var(--red); }
 
   /* ── Contact panel ── */
   .contact-side-panel {
-    width: 100%;
-    max-width: 100%;
+    width: 100vw;
+    max-width: 100vw;
   }
 
   .contact-panel-content {
@@ -2875,23 +2875,6 @@ h1.headline .dim { color:var(--red); }
   .feature-card.is-visible::before { height: 2px; width: 100%; }
 }
 
-/* ── Mobile: disable 3D perspective on feature cards — fixes iOS horizontal shift ── */
-@media (max-width: 768px) {
-  .feature-card {
-    perspective: none;
-    transform-style: flat;
-    transform: translateY(60px) scale(0.96);
-  }
-  @keyframes cardRevealMobile {
-    0%   { opacity: 0; filter: blur(8px); transform: translateY(60px) scale(0.96); }
-    45%  { filter: blur(2px); }
-    100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
-  }
-  .feature-card.is-visible {
-    animation: cardRevealMobile 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-}
-
 /* ══════════════════════════════════════════════
    CONTACT SIDE PANEL — Creative Dark Design
 ═══════════════════════════════════════════════ */
@@ -3085,7 +3068,7 @@ h1.headline .dim { color:var(--red); }
 }
 .contact-side-panel::-webkit-scrollbar { display: none; }
 @media (max-width: 768px) {
-  .contact-side-panel { width: 100% !important; max-width: 100% !important; }
+  .contact-side-panel { width: 100vw !important; max-width: 100vw !important; }
 }
 
 /* ── Mobile: contact-toggle-btn below lang-toggle, same side alignment ── */
@@ -4395,97 +4378,11 @@ html[dir="ltr"] #contactEmail {
   *, *::before, *::after {
     cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><polygon points='14,0 15.6,12.4 28,14 15.6,15.6 14,28 12.4,15.6 0,14 12.4,12.4' fill='%23ff0019'/></svg>") 14 14, auto !important;
   }
-
   a, button, [role="button"], label,
   .services-nav-btn, .lang-toggle, .contact-toggle-btn,
   .nav-brand, .faq-card-question, .st-card,
   .zoom-cell, .services-progress-segment, .tst-arrow-btn {
     cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><polygon points='14,0 15.6,12.4 28,14 15.6,15.6 14,28 12.4,15.6 0,14 12.4,12.4' fill='%23ff0019'/></svg>") 14 14, pointer !important;
-  }
-}
-
-/* ══════════════════════════════════════════════════════
-   iOS MOBILE — Disable 3D GPU compositing contexts
-   Prevents horizontal viewport shift on iOS Safari
-   caused by perspective + rotateX/Y + filter:blur combos
-══════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-
-  /* ── Testimonials: remove perspective() + rotateX/Y from all states ── */
-  .tst-label {
-    filter: blur(12px);
-    transform: translateY(60px) scale(0.88);
-  }
-  .tst-heading {
-    filter: blur(14px);
-    transform: translateY(70px) scale(0.88);
-  }
-  .tst-carousel-wrap {
-    filter: blur(12px);
-    transform: translateY(55px) scale(0.88);
-    perspective: none;
-    perspective-origin: unset;
-  }
-  .tst-card {
-    will-change: auto;
-    transform-style: flat;
-    transform: none;
-  }
-  .tst-card:hover { transform: none; }
-
-  @keyframes tstLabelEnterM {
-    0%   { opacity: 0; filter: blur(12px); transform: translateY(60px) scale(0.88); }
-    55%  { filter: blur(2px); }
-    100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
-  }
-  @keyframes tstHeadingEnterM {
-    0%   { opacity: 0; filter: blur(14px); transform: translateY(70px) scale(0.88); }
-    55%  { filter: blur(2px); }
-    100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
-  }
-  @keyframes tstWrapEnterM {
-    0%   { opacity: 0; filter: blur(12px); transform: translateY(55px) scale(0.88); }
-    60%  { filter: blur(2px); }
-    100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
-  }
-  #testimonials-section.is-visible .tst-label {
-    animation: tstLabelEnterM 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
-  }
-  #testimonials-section.is-visible .tst-heading {
-    animation: tstHeadingEnterM 1.7s cubic-bezier(0.16, 1, 0.3, 1) 0.28s forwards;
-  }
-  #testimonials-section.is-visible .tst-carousel-wrap {
-    animation: tstWrapEnterM 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
-  }
-
-  /* ── Services: remove translateZ(0) GPU hack + rotateX from panel title ── */
-  .services-content-panel {
-    transform: none;
-  }
-  .panel-title {
-    transform: translateY(40px) scale(0.92);
-  }
-  @keyframes panelTitleEnter {
-    0%   { filter: blur(8px); transform: translateY(40px) scale(0.92); opacity: 0; }
-    100% { filter: blur(0); transform: translateY(0) scale(1); opacity: 1; }
-  }
-
-  /* ── FAQ: remove 3D perspective context ── */
-  .faq-list {
-    perspective: none;
-  }
-  .faq-card {
-    transform-style: flat;
-  }
-
-  /* ── Zoom overlay title: remove rotateX — fixes iOS shift during zoom-in ── */
-  .zoom-content-overlay .zco-title {
-    filter: blur(6px);
-    transform: translateY(40px) scale(0.92);
-  }
-  .zoom-content-overlay.visible .zco-title {
-    filter: blur(0);
-    transform: translateY(0) scale(1);
   }
 }
 </style>
@@ -7834,7 +7731,6 @@ window.addEventListener('load', function() {
   let originStr = '50% 50%';
 
   function refreshOrigin() {
-    if (currentP > 0.05) return; // Skip while zooming — getBoundingClientRect returns scaled values on iOS
     const gridRect = sticky.getBoundingClientRect();
     const cellRect = centerCell.getBoundingClientRect();
     const px = Math.round((cellRect.left + cellRect.width  / 2) - gridRect.left);
@@ -7878,7 +7774,7 @@ window.addEventListener('load', function() {
     const ep    = 1 - Math.pow(1 - zoomP, 3);        // ease-out cubic
     const scale = 1 + (maxScale - 1) * ep;
 
-    gsap.set(sticky, { scale });
+    gsap.set(sticky, { scale, transformOrigin: originStr });
 
     // Animate border-radius from 10px to 0 as zoom progresses
     const borderRadiusProgress = Math.min(p / 0.60, 1);
@@ -7954,7 +7850,6 @@ window.addEventListener('load', function() {
   // ── zoom-in ─────────────────────────────────────────────────────────────
   function startZoomIn() {
     if (autoZoomTween) return;
-    refreshOrigin(); // Recalculate origin at scale=1 before animation starts
     disableZoomInListeners();
     // Lock scroll during zoom-in so user can't scroll away while animating
     window.addEventListener('wheel',     preventScroll, { passive: false, capture: true });
@@ -7986,7 +7881,6 @@ window.addEventListener('load', function() {
   function startZoomOut() {
     disableZoomOutListeners();
     if (autoZoomTween) { autoZoomTween.kill(); }
-    sticky.style.transformOrigin = originStr; // Restore cached origin before zoom-out starts
     // capture:true fires before Lenis — fully blocks user scroll during zoom-out
     window.addEventListener('wheel',     preventScroll, { passive: false, capture: true });
     window.addEventListener('touchmove', preventScroll, { passive: false, capture: true });
