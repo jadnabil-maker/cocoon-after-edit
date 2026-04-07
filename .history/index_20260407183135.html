@@ -6367,61 +6367,18 @@ html[dir="ltr"] #contactEmail {
   }
 
   // ── Guard: يمنع إظهار القسم الأعلى عند السكرول لفوق بعد الزوم ──
-  var _reverseInProgress     = false;
-  var _animationCompleted    = false;
-  var _upwardGuardHandlers   = null;
-  var _forwardGuardCleanup   = null;
+  var _reverseInProgress   = false;
+  var _animationCompleted  = false;
+  var _upwardGuardHandlers = null;
+  var _justReversed         = false;
+  var _reverseCooldownTimer = null;
+  var _postReverseScrollY   = 0;
 
-  // ── Forward Guard: يلتقط السكرول للأمام بعد reverse — مهم على iOS ──
-  function _installForwardGuard() {
-    _removeForwardGuard();
-    var _done = false;
-    function onScroll() {
-      if (_done) return;
-      if (_animationCompleted || _reverseInProgress) { _removeForwardGuard(); return; }
-      if (section.getBoundingClientRect().top < window.innerHeight * 0.7) {
-        _done = true;
-        _removeForwardGuard();
-        _triggerZoomIn();
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    _forwardGuardCleanup = function() {
-      window.removeEventListener('scroll', onScroll);
-      _forwardGuardCleanup = null;
-    };
-  }
-  function _removeForwardGuard() {
-    if (_forwardGuardCleanup) { _forwardGuardCleanup(); _forwardGuardCleanup = null; }
-  }
-
-  // ── Zoom In: المنطق المشترك بين onEnter و forward guard ──
-  function _triggerZoomIn() {
-    _removeUpwardScrollGuard();
-    _removeForwardGuard();
-    if (typeof lenis !== 'undefined' && lenis && typeof lenis.stop === 'function') lenis.stop();
-    var enterOverlay = document.createElement('div');
-    enterOverlay.style.cssText = 'position:fixed;inset:0;background:#000;z-index:99999;pointer-events:all;opacity:0;';
-    document.body.appendChild(enterOverlay);
-    gsap.to(enterOverlay, { opacity: 1, duration: 0.35, ease: 'power2.in', onComplete: function() {
-      lockJourneyScroll(true);
-      const startTl = () => {
-        tl.eventCallback('onComplete', () => {
-          _animationCompleted = true;
-          unlockJourneyScroll();
-          _installUpwardScrollGuard();
-        });
-        tl.restart();
-        gsap.to(enterOverlay, { opacity: 0, duration: 0.45, ease: 'power2.out',
-          onComplete: function() { enterOverlay.remove(); }
-        });
-      };
-      if (window._driveStlPhase2) {
-        window._driveStlPhase2(startTl);
-      } else {
-        startTl();
-      }
-    }});
+  function _setReverseCooldown() {
+    _justReversed = true;
+    _postReverseScrollY = _savedScrollY;
+    if (_reverseCooldownTimer) clearTimeout(_reverseCooldownTimer);
+    _reverseCooldownTimer = setTimeout(function() { _justReversed = false; }, 2000);
   }
 
   function _doReverse() {
@@ -6432,6 +6389,7 @@ html[dir="ltr"] #contactEmail {
     var afterReverse = function() {
       _reverseInProgress  = false;
       _animationCompleted = false;
+      _setReverseCooldown();
       // overlay أسود يغطي الـ scroll jump ثم يفيد أوت ليكشف features-section بشكل ناعم
       var fadeOverlay = document.createElement('div');
       fadeOverlay.style.cssText = 'position:fixed;inset:0;background:#000;z-index:99999;pointer-events:none;opacity:1;';
@@ -6440,11 +6398,7 @@ html[dir="ltr"] #contactEmail {
         unlockJourneyScroll();
         tlNodes.forEach(function(n) { n.classList.remove('active'); });
         gsap.to(fadeOverlay, { opacity: 0, duration: 0.55, ease: 'power2.out',
-          onComplete: function() {
-            fadeOverlay.remove();
-            ScrollTrigger.refresh();
-            _installForwardGuard();
-          }
+          onComplete: function() { fadeOverlay.remove(); }
         });
       };
       if (window._reverseStl) {
@@ -6658,11 +6612,45 @@ html[dir="ltr"] #contactEmail {
     trigger: section,
     start: 'top 70%',
     onEnter: () => {
-      _triggerZoomIn();
+      if (_justReversed) {
+        // إذا المستخدم سكرل للأمام مسافة واضحة — هذا سكرول مقصود → اسمح بالزوم ان
+        if (window.scrollY > _postReverseScrollY + 50) {
+          _justReversed = false;
+        } else {
+          return; // لا يزال في منطقة الكولداون (inertia / bounce)
+        }
+      }
+      _removeUpwardScrollGuard();
+      // أوقف السكرول فوراً لمنع تحرك الصفحة أثناء الـ fade
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.stop === 'function') lenis.stop();
+      // overlay يبدأ شفاف ثم يفيد إن (يغطي features) ثم يفيد أوت مع الانيميشن
+      var enterOverlay = document.createElement('div');
+      enterOverlay.style.cssText = 'position:fixed;inset:0;background:#000;z-index:99999;pointer-events:all;opacity:0;';
+      document.body.appendChild(enterOverlay);
+      gsap.to(enterOverlay, { opacity: 1, duration: 0.35, ease: 'power2.in', onComplete: function() {
+        lockJourneyScroll(true);
+        const startTl = () => {
+          tl.eventCallback('onComplete', () => {
+            _animationCompleted = true;
+            unlockJourneyScroll();
+            _installUpwardScrollGuard();
+          });
+          tl.restart();
+          gsap.to(enterOverlay, { opacity: 0, duration: 0.45, ease: 'power2.out',
+            onComplete: function() { enterOverlay.remove(); }
+          });
+        };
+        if (window._driveStlPhase2) {
+          window._driveStlPhase2(startTl);
+        } else {
+          startTl();
+        }
+      }});
     },
     onLeaveBack: () => {
       // لا تفعل شيئاً إذا الأنيميشن ما اكتمل — المستخدم مجرد يمرر للخلف عادي
       if (!_animationCompleted) return;
+      if (_justReversed) return;
       _doReverse();
     }
   });
