@@ -6406,10 +6406,10 @@ html[dir="ltr"] #contactEmail {
 
   function _installUpwardScrollGuard() {
     if (_upwardGuardHandlers) return;
-    // نحسب lockedScrollY بعد frame واحد لضمان استقرار الـ layout
-    requestAnimationFrame(function() {
     // النقطة المقفولة: حيث أعلى القسم = أعلى الشاشة
     var lockedScrollY = section.getBoundingClientRect().top + window.scrollY;
+    // على iOS ممكن الـ inertia تكون تجاوزت النقطة قبل تركيب الـ guard — نطلق الـ reverse فوراً
+    if (window.scrollY < lockedScrollY - 3) { _doReverse(); return; }
     var _scrollTriggered = false;
     // scroll event: يشتغل دائماً حتى أثناء iOS inertia scrolling
     function onScroll() {
@@ -6424,23 +6424,15 @@ html[dir="ltr"] #contactEmail {
       }
     }
     // wheel: للديسكتوب مع preventDefault لمنع الحركة قبل الـ reverse
-    // شرط: نشغّل الـ reverse بس لما القسم على كامل الشاشة (scrollY وصل lockedScrollY)
     function onWheel(e) {
-      if (e.deltaY < 0) {
-        var sy = window.scrollY;
-        if (sy >= lockedScrollY - 3) {
-          e.preventDefault();
-          _doReverse();
-        }
-        // لو لسا ما وصلنا للنقطة — اتركه يسكرول عادي
-      } else {
-        _removeUpwardScrollGuard();
-      }
+      if (e.deltaY < 0) { e.preventDefault(); _doReverse(); }
+      // لا نزيل الـ guard عند deltaY > 0 — الاهتزاز الطبيعي للـ trackpad قد يرسل قيم موجبة
+      // أثناء التمرير للأعلى، وإزالة الـ guard هنا تسبب ظهور features-section
+      // الـ scroll handler التالي يكفي لإزالة الـ guard عند التمرير الحقيقي لأسفل
     }
     _upwardGuardHandlers = { onScroll: onScroll, onWheel: onWheel };
     window.addEventListener('scroll',  onScroll, { passive: true });
     document.addEventListener('wheel', onWheel,  { passive: false, capture: true });
-    }); // end requestAnimationFrame
   }
 
   function _removeUpwardScrollGuard() {
@@ -6618,9 +6610,7 @@ html[dir="ltr"] #contactEmail {
     trigger: section,
     start: 'bottom bottom',
     onEnterBack: () => {
-      // الشرط المهم: الأنيميشن اكتمل فعلاً (progress=1) وما في guard شغّال وما في reverse جارٍ
-      // بهذا نضمن إن الـ guard يتركّب بس لما الـ tl وصل للنهاية حقيقةً
-      if (_animationCompleted && !_reverseInProgress && !_upwardGuardHandlers && tl.progress() >= 0.99) {
+      if (_animationCompleted && !_reverseInProgress) {
         _installUpwardScrollGuard();
       }
     },
@@ -6628,6 +6618,19 @@ html[dir="ltr"] #contactEmail {
       // مشى للأسفل — الـ guard يشيل نفسه تلقائياً عند أول سكرول نازل
     }
   });
+
+  // ── Safety Net: مستمع scroll دائم يضمن عدم تجاوز القسم بدون reverse ──
+  // يغطي الحالات التي falter فيها الـ guard (مثل اهتزاز trackpad،
+  // أو عدم إطلاق onEnterBack بسبب التمرير السريع من أقسام بعيدة)
+  window.addEventListener('scroll', function() {
+    if (!_animationCompleted || _reverseInProgress) return;
+    if (_upwardGuardHandlers) return; // الـ guard فعّال — لا حاجة للتدخل
+    var sectionTop = section.getBoundingClientRect().top;
+    // إذا كان أعلى القسم قد نزل عن أعلى الشاشة بأكثر من 3px → المستخدم تجاوز النقطة
+    if (sectionTop > 3) {
+      _installUpwardScrollGuard();
+    }
+  }, { passive: true });
 
 })();
 

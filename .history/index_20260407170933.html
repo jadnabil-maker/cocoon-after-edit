@@ -6410,6 +6410,8 @@ html[dir="ltr"] #contactEmail {
     requestAnimationFrame(function() {
     // النقطة المقفولة: حيث أعلى القسم = أعلى الشاشة
     var lockedScrollY = section.getBoundingClientRect().top + window.scrollY;
+    // على iOS ممكن الـ inertia تكون تجاوزت النقطة قبل تركيب الـ guard — نطلق الـ reverse فوراً
+    if (window.scrollY < lockedScrollY - 3) { _doReverse(); return; }
     var _scrollTriggered = false;
     // scroll event: يشتغل دائماً حتى أثناء iOS inertia scrolling
     function onScroll() {
