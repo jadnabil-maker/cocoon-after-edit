@@ -6370,6 +6370,17 @@ html[dir="ltr"] #contactEmail {
   var _reverseInProgress   = false;
   var _animationCompleted  = false;
   var _upwardGuardHandlers = null;
+  var _justReversed         = false;
+  var _reverseCooldownTimer = null;
+  var _postReverseScrollY   = 0;
+
+  function _setReverseCooldown() {
+    _justReversed = true;
+    _postReverseScrollY = _savedScrollY;
+    if (_reverseCooldownTimer) clearTimeout(_reverseCooldownTimer);
+    _reverseCooldownTimer = setTimeout(function() { _justReversed = false; }, 2000);
+  }
+
   function _doReverse() {
     if (_reverseInProgress) return;
     _reverseInProgress = true;
@@ -6378,6 +6389,7 @@ html[dir="ltr"] #contactEmail {
     var afterReverse = function() {
       _reverseInProgress  = false;
       _animationCompleted = false;
+      _setReverseCooldown();
       // overlay أسود يغطي الـ scroll jump ثم يفيد أوت ليكشف features-section بشكل ناعم
       var fadeOverlay = document.createElement('div');
       fadeOverlay.style.cssText = 'position:fixed;inset:0;background:#000;z-index:99999;pointer-events:none;opacity:1;';
@@ -6600,6 +6612,14 @@ html[dir="ltr"] #contactEmail {
     trigger: section,
     start: 'top 70%',
     onEnter: () => {
+      if (_justReversed) {
+        // إذا المستخدم سكرل للأمام مسافة واضحة — هذا سكرول مقصود → اسمح بالزوم ان
+        if (window.scrollY > _postReverseScrollY + 50) {
+          _justReversed = false;
+        } else {
+          return; // لا يزال في منطقة الكولداون (inertia / bounce)
+        }
+      }
       _removeUpwardScrollGuard();
       // أوقف السكرول فوراً لمنع تحرك الصفحة أثناء الـ fade
       if (typeof lenis !== 'undefined' && lenis && typeof lenis.stop === 'function') lenis.stop();
@@ -6630,6 +6650,7 @@ html[dir="ltr"] #contactEmail {
     onLeaveBack: () => {
       // لا تفعل شيئاً إذا الأنيميشن ما اكتمل — المستخدم مجرد يمرر للخلف عادي
       if (!_animationCompleted) return;
+      if (_justReversed) return;
       _doReverse();
     }
   });
