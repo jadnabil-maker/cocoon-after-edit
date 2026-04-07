@@ -8021,14 +8021,28 @@ window.addEventListener('load', function() {
       disableAllListeners();
       window.removeEventListener('wheel',     preventScroll, { capture: true });
       window.removeEventListener('touchmove', preventScroll, { capture: true });
-      if (autoZoomTween) { autoZoomTween.kill(); autoZoomTween = null; }
-      currentP = 0;
-      gsap.set(sticky, { scale: 1 });
-      centerCell.style.borderRadius = '10px';
-      contentEl.classList.remove('visible');
-      contentEl.classList.remove('ticker-visible');
-      tickerEl.classList.remove('visible');
-      tickerShown = false;
+
+      if (currentP > 0.05) {
+        // User fast-scrolled past section while zoom was active — snap back and animate zoom-out
+        if (autoZoomTween) { autoZoomTween.kill(); autoZoomTween = null; }
+        const sectionEnd = section.offsetTop + section.offsetHeight - window.innerHeight;
+        if (typeof lenis !== 'undefined' && lenis) {
+          lenis.scrollTo(sectionEnd, { immediate: true });
+        } else {
+          window.scrollTo(0, sectionEnd);
+        }
+        startZoomOut();
+      } else {
+        // Zoom never started — instant reset is safe
+        if (autoZoomTween) { autoZoomTween.kill(); autoZoomTween = null; }
+        currentP = 0;
+        gsap.set(sticky, { scale: 1 });
+        centerCell.style.borderRadius = '10px';
+        contentEl.classList.remove('visible');
+        contentEl.classList.remove('ticker-visible');
+        tickerEl.classList.remove('visible');
+        tickerShown = false;
+      }
     }
   });
 })();
