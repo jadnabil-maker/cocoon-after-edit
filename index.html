@@ -4677,7 +4677,7 @@ html[dir="ltr"] #contactEmail {
     <div class="video-inner">
       <video id="hero-video"
         src="https://video.blissagency.it/Sasso-4K%20(1)%20(1)%20OTTIMIZZATO.mp4"
-        autoplay muted loop playsinline preload="none"
+        autoplay muted loop playsinline x-webkit-playsinline preload="auto"
       ></video>
       <div class="video-overlay"></div>
     </div>
@@ -4904,7 +4904,7 @@ html[dir="ltr"] #contactEmail {
       </div>
       <div class="zoom-cell zgc-r2c" id="zoom-center">
         <div class="zc-bg zc-bg--r2c"></div>
-        <video class="zc-video" autoplay loop muted playsinline>
+        <video class="zc-video" autoplay loop muted playsinline x-webkit-playsinline preload="auto">
           <source src="https://framerusercontent.com/assets/Qc6dhglAiYjaI04EEF5RsqHBU.mp4" type="video/mp4">
         </video>
         <!-- Content overlay that appears after zoom -->
@@ -4990,7 +4990,7 @@ html[dir="ltr"] #contactEmail {
         <!-- Single static video for all slides -->
         <div class="showcase-slide" data-index="0">
           <div class="showcase-video-frame">
-            <video class="showcase-video" autoplay muted loop playsinline>
+            <video class="showcase-video" autoplay muted loop playsinline x-webkit-playsinline preload="auto">
               <source src="https://res.cloudinary.com/dlsofj4gi/video/upload/v1775319488/From_concept_to_crowd_moment._We_crafted_a_container_style_booth_aligned_with_icauralghanim_ide_ed3zqq.mp4" type="video/mp4">
             </video>
             <div class="showcase-video-overlay"></div>
@@ -8395,6 +8395,24 @@ window.addEventListener('load', function() {
 
   // Apply saved language on load
   applyLanguage(currentLang);
+})();
+</script>
+
+<!-- iOS Low Power Mode video autoplay fallback -->
+<script>
+(function() {
+  function tryPlayAll() {
+    document.querySelectorAll('video').forEach(function(v) {
+      if (v.paused) v.play().catch(function(){});
+    });
+  }
+  // Fire once on first user gesture (covers Low Power Mode block)
+  ['touchstart', 'pointerdown', 'click'].forEach(function(evt) {
+    document.addEventListener(evt, function handler() {
+      tryPlayAll();
+      document.removeEventListener(evt, handler, { capture: true });
+    }, { once: true, capture: true, passive: true });
+  });
 })();
 </script>
 
